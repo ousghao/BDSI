@@ -1,0 +1,190 @@
+Vision du site
+Portail officiel du Master « Big Data & Systèmes Intelligents – FS Dhar El Mehraz » qui :
+
+présente clairement le programme, les matières et les compétences visées,
+
+valorise les projets/PFE et les accomplissements des étudiants,
+
+centralise les actualités, événements et opportunités,
+
+renforce les liens avec les entreprises et la recherche,
+
+dispose d’un espace d’administration pour gérer tout le contenu et activer/désactiver des pages,
+
+propose un mode sombre confortable.
+
+Publics visés
+Candidats potentiels (licence/master)
+
+Étudiants du master
+
+Enseignants/chercheurs
+
+Entreprises et partenaires
+
+Alumni et jurys PFE
+
+Structure et contenus (côté public)
+Accueil
+
+Message d’ouverture, photo/visuel de promotion, chiffres-clés (taux d’insertion, publications, partenaires).
+
+Mise en avant : 3 projets vedettes, 3 prochains événements, 3 dernières actualités.
+
+Le Programme
+
+Présentation globale du master : objectifs, compétences, débouchés.
+
+Organisation par semestres (S1–S4), volumes, évaluation, modalités pédagogiques (TD/TP, projets).
+
+Matières / Unités d’enseignement
+
+Catalogue par semestre avec fiches détaillées : objectifs, compétences, plan du cours, prérequis, modalités d’évaluation, ressources, enseignant·e référent·e.
+
+Équipe pédagogique
+
+Portraits synthétiques (biographie courte, spécialités, thèmes de recherche).
+
+Projets & PFE
+
+Galerie filtrable (année, thème : IA/ML, Data Eng, NLP, CV, IoT…).
+
+Fiche projet : résumé, problématique, méthodes, résultats, livrables (rapport/vidéo), encadrants, étudiants, mots-clés, distinctions.
+
+Accomplissements
+
+Prix, compétitions, bourses, publications, certificats notables.
+
+Frise chronologique annuelle.
+
+Actualités
+
+Communiqués, articles, retours d’événements, visites industrielles, annonces.
+
+Événements
+
+Séminaires, soutenances, meetups, ateliers.
+
+Vue liste + calendrier, page événement avec description, intervenants, inscription, documents post-événement.
+
+Admissions
+
+Conditions d’accès, dossier à préparer, calendrier, FAQ candidats, conseils.
+
+Partenariats
+
+Entreprises, laboratoires, établissements, cas d’usage, témoignages.
+
+Espace Étudiant
+
+Ressources utiles : plannings, chartes, modèles de documents, liens pédagogiques.
+
+Alumni & Carrières
+
+Parcours d’anciens, secteurs d’embauche, offres sélectionnées, mentors.
+
+Contact
+
+Coordonnées, formulaire, réseaux sociaux, localisation, horaires.
+
+Identité éditoriale
+Ton : professionnel, inspirant, clair.
+
+Style : phrases courtes, bénéfices concrets, mise en valeur visuelle des résultats.
+
+Multilingue : FR prioritaire, sections EN et AR pour rayonnement et accessibilité.
+
+Expériences clés
+Découverte rapide : en 30 secondes, comprendre ce qu’est le master et pourquoi il est différenciant.
+
+Preuve par les projets : navigation intuitive vers des cas concrets et résultats mesurables.
+
+Parcours candidat : informations d’admission rassemblées, rassurantes et actionnables.
+
+Vie du master : fil d’actus et agenda toujours à jour.
+
+Accessibilité & confort
+Respect des contrastes, navigation clavier, alternatives textuelles, tailles de police ajustables.
+
+Mode sombre : commutateur visible sur toutes les pages ; conservation de la préférence de l’utilisateur ; traitement soigné des visuels pour rester lisibles en clair/sombre.
+
+Référencement & visibilité (sans détails techniques)
+Titres clairs, résumés courts et informatifs, structuration hiérarchique des contenus, extraits enrichis pour les pages Cours, Projets et Événements.
+
+Vocabulaire centré sur compétences et cas d’usage (ex. « ingénierie des données », « apprentissage automatique », « systèmes intelligents »).
+
+Gouvernance du contenu
+Charte de publication : ton, longueur, visuels, droits d’image, mentions des encadrants et sources.
+
+Cycle de vie : Brouillon → Relecture → Publication → Archivage (avec date de révision).
+
+Responsabilités :
+
+Responsable pédagogique : pages Programme/Matières.
+
+Rédacteur communication : Actualités/Événements/Accomplissements.
+
+Coordinateur Projets : Projets & PFE, Alumni.
+
+Référent partenaires : Partenariats & offres.
+
+Espace d’administration (fonctionnel)
+Tableau de bord : aperçu des contenus récents, éléments en attente de relecture, événements à venir.
+
+Activation/Désactivation de pages : interrupteur (feature on/off) par page et par section (ex. masquer temporairement « Admissions » hors campagne).
+
+Gestion des contenus (CRUD) :
+
+Cours, Matières, Équipe, Projets, Actualités, Événements, Publications, Partenaires, Alumni, FAQ, Témoignages, Ressources.
+
+Champs dédiés à la traduction (FR/EN/AR).
+
+Médiathèque (images, vidéos, PDF) avec légendes et crédits.
+
+Workflow éditorial : rôles, relectures, commentaires internes, historique des versions, journal des actions.
+
+Paramètres : identité visuelle (logos, couleurs), textes légaux, réseaux sociaux, sections d’accueil.
+
+Prévisualisation : voir le rendu clair/sombre avant publication.
+
+Recherche interne : retrouver rapidement un cours, un projet, un événement.
+
+Parcours types (scénarios utilisateur)
+Candidat : Accueil → Programme → Matières → Projets → Admissions → FAQ → Contact.
+
+Entreprise : Partenariats → Projets → Événements → Contact (proposer PFE/stage).
+
+Étudiant : Actualités/Événements → Espace Étudiant (documents, planning).
+
+Alumni : Success stories → Offres & Mentorat → Contribution (témoignage).
+
+Pages modèles (gabarits éditoriaux)
+Fiche Matière : objectifs, compétences, plan indicatif, évaluation, ressources, enseignant.
+
+Fiche Projet : résumé, problème, approche, résultats, livrables, encadrants, étudiants, tags, distinctions.
+
+Actualité : titre court, chapeau, corps, visuel, tags, auteur, date.
+
+Événement : présentation, intervenants, date/lieu, inscription, documents post-événement.
+
+Témoignage : photo (optionnelle), rôle, citation brève, contexte.
+
+Éthique & conformité
+Politique d’utilisation des logos/visuels, consentement des personnes photographiées.
+
+Mentions académiques exactes (noms d’enseignants, affiliations, financements).
+
+Protection des données (formulaire de contact, dépôts d’offres).
+
+Traçabilité des modifications importantes.
+
+Indicateurs d’impact (pilotage)
+Fréquence de mise à jour des contenus clés (Projets, Actus, Événements).
+
+Pages les plus consultées par les candidats (Programme, Admissions, Projets).
+
+Signalements partenaires (contacts, offres, invitations).
+
+Témoignages reçus et mis en avant.
+
+Diversité des domaines de projets (équilibre IA/Big Data/systèmes).
