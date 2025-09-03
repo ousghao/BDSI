@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, MapPin } from "lucide-react";
+import { Link } from "wouter";
 import type { Event } from "@shared/schema";
 
 interface EventCardProps {
@@ -31,72 +32,74 @@ export function EventCard({ event }: EventCardProps) {
   ];
 
   return (
-    <Card 
-      className="bg-slate-50 dark:bg-slate-700 rounded-xl p-6 hover:shadow-lg transition-shadow duration-300"
-      data-testid={`event-card-${event.id}`}
-    >
-      <CardContent className="p-0">
-        <div className="flex items-start space-x-4">
-          <div 
-            className={`rounded-lg p-3 text-center min-w-[60px] ${
-              typeColors[event.type as keyof typeof typeColors] || "bg-gray-100 text-gray-700"
-            }`}
-            data-testid={`event-date-${event.id}`}
-          >
-            <div className="text-sm font-medium">
-              {monthNames[startDate.getMonth()]}
-            </div>
-            <div className="text-xl font-bold">
-              {startDate.getDate()}
-            </div>
-          </div>
-          
-          <div className="flex-1">
-            <div className="mb-2">
-              <Badge 
-                className={typeColors[event.type as keyof typeof typeColors] || "bg-gray-100 text-gray-700"}
-                data-testid={`event-type-${event.id}`}
-              >
-                {typeLabels[event.type as keyof typeof typeLabels] || event.type}
-              </Badge>
-            </div>
-            
-            <h4 
-              className="font-semibold text-slate-900 dark:text-white mb-1"
-              data-testid={`event-title-${event.id}`}
+    <Link href={`/events/${event.id}`}>
+      <Card 
+        className="bg-slate-50 dark:bg-slate-700 rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group cursor-pointer"
+        data-testid={`event-card-${event.id}`}
+      >
+        <CardContent className="p-0">
+          <div className="flex items-start space-x-4">
+            <div 
+              className={`rounded-lg p-3 text-center min-w-[60px] ${
+                typeColors[event.type as keyof typeof typeColors] || "bg-gray-100 text-gray-700"
+              }`}
+              data-testid={`event-date-${event.id}`}
             >
-              {event.title}
-            </h4>
+              <div className="text-sm font-medium">
+                {monthNames[startDate.getMonth()]}
+              </div>
+              <div className="text-xl font-bold">
+                {startDate.getDate()}
+              </div>
+            </div>
             
-            <p 
-              className="text-sm text-slate-600 dark:text-slate-400 mb-2"
-              data-testid={`event-description-${event.id}`}
-            >
-              {event.description}
-            </p>
-            
-            <div className="flex flex-col gap-1 text-xs text-slate-500 dark:text-slate-400">
-              <div className="flex items-center" data-testid={`event-time-${event.id}`}>
-                <Clock className="mr-1 h-3 w-3" />
-                <span>
-                  {startDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
-                  {startDate.toDateString() !== endDate.toDateString() ? 
-                    ` - ${endDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}` :
-                    ` - ${endDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`
-                  }
-                </span>
+            <div className="flex-1">
+              <div className="mb-2">
+                <Badge 
+                  className={typeColors[event.type as keyof typeof typeColors] || "bg-gray-100 text-gray-700"}
+                  data-testid={`event-type-${event.id}`}
+                >
+                  {typeLabels[event.type as keyof typeof typeLabels] || event.type}
+                </Badge>
               </div>
               
-              {event.location && (
-                <div className="flex items-center" data-testid={`event-location-${event.id}`}>
-                  <MapPin className="mr-1 h-3 w-3" />
-                  <span>{event.location}</span>
+              <h4 
+                className="font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+                data-testid={`event-title-${event.id}`}
+              >
+                {event.title}
+              </h4>
+              
+              <p 
+                className="text-sm text-slate-600 dark:text-slate-400 mb-2 line-clamp-2"
+                data-testid={`event-description-${event.id}`}
+              >
+                {event.description}
+              </p>
+              
+              <div className="flex flex-col gap-1 text-xs text-slate-500 dark:text-slate-400">
+                <div className="flex items-center" data-testid={`event-time-${event.id}`}>
+                  <Clock className="mr-1 h-3 w-3" />
+                  <span>
+                    {startDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                    {startDate.toDateString() !== endDate.toDateString() ? 
+                      ` - ${endDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}` :
+                      ` - ${endDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`
+                    }
+                  </span>
                 </div>
-              )}
+                
+                {event.location && (
+                  <div className="flex items-center" data-testid={`event-location-${event.id}`}>
+                    <MapPin className="mr-1 h-3 w-3" />
+                    <span>{event.location}</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }

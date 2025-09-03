@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
-import { Layout } from "@/components/Layout/Layout";
+import { Layout } from "@/components/Layout";
+import { useSettings } from "@/hooks/useSettings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,71 +24,46 @@ import {
   RefreshCw
 } from "lucide-react";
 
-interface SiteSettings {
-  // General settings
-  siteName: string;
-  siteDescription: string;
-  contactEmail: string;
-  contactPhone: string;
-  address: string;
-  
-  // Social media
-  linkedinUrl: string;
-  twitterUrl: string;
-  youtubeUrl: string;
-  
-  // Features
-  darkModeEnabled: boolean;
-  multiLanguageEnabled: boolean;
-  registrationEnabled: boolean;
-  
-  // SEO
-  metaKeywords: string;
-  metaDescription: string;
-  
-  // Maintenance
-  maintenanceMode: boolean;
-  maintenanceMessage: string;
-}
+import type { SiteSettings } from "@/hooks/useSettings";
 
 export default function Settings() {
   const { user, isAuthenticated, isLoading } = useAuth();
+  const { t } = useLanguage();
   const { toast } = useToast();
-  const [isSaving, setIsSaving] = useState(false);
+  const { settings, isLoading: settingsLoading, updateMultipleSettings, isUpdating, error, refetch } = useSettings();
   
-  const [settings, setSettings] = useState<SiteSettings>({
-    // General settings
-    siteName: "Master BDSI - FS Dhar El Mehraz",
-    siteDescription: "Formation d'excellence en Big Data et Systèmes Intelligents pour les futurs leaders technologiques.",
-    contactEmail: "master.bdsi@usmba.ac.ma",
-    contactPhone: "+212 5 35 60 XX XX",
-    address: "Faculté des Sciences Dhar El Mehraz, Route d'Imouzzer, BP 1796, 30000 Fès, Maroc",
-    
-    // Social media
-    linkedinUrl: "",
-    twitterUrl: "",
-    youtubeUrl: "",
-    
-    // Features
-    darkModeEnabled: true,
-    multiLanguageEnabled: true,
-    registrationEnabled: false,
-    
-    // SEO
-    metaKeywords: "master, big data, systèmes intelligents, intelligence artificielle, fès, maroc",
-    metaDescription: "Master Big Data & Systèmes Intelligents à la Faculté des Sciences Dhar El Mehraz, Fès. Formation d'excellence en IA et analyse de données massives.",
-    
-    // Maintenance
-    maintenanceMode: false,
-    maintenanceMessage: "Le site est temporairement en maintenance. Nous serons bientôt de retour.",
-  });
+  // Local state for form values - only send to API when saving
+  const [localSettings, setLocalSettings] = useState<SiteSettings>({});
+  const [hasChanges, setHasChanges] = useState(false);
+
+  // Initialize local settings when settings are loaded
+  useEffect(() => {
+    if (settings && Object.keys(settings).length > 0) {
+      console.log('🔄 Settings loaded from API:', settings);
+      // Deep copy to avoid reference issues
+      const settingsCopy = JSON.parse(JSON.stringify(settings));
+      setLocalSettings(settingsCopy);
+      setHasChanges(false);
+    }
+  }, [settings]);
+
+  // Show error toast if there's an error
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: t('settings.loadError'),
+        description: t('settings.loadErrorDescription'),
+        variant: "destructive",
+      });
+    }
+  }, [error, toast]);
 
   // Redirect if not authenticated or not admin
   useEffect(() => {
     if (!isLoading && (!isAuthenticated || user?.role !== 'admin')) {
       toast({
-        title: "Accès non autorisé",
-        description: "Vous devez être connecté en tant qu'administrateur.",
+        title: t('admin.unauthorized'),
+        description: t('admin.unauthorizedDescription'),
         variant: "destructive",
       });
       setTimeout(() => {
@@ -96,7 +73,7 @@ export default function Settings() {
     }
   }, [isAuthenticated, isLoading, user?.role, toast]);
 
-  if (isLoading) {
+  if (isLoading || settingsLoading) {
     return (
       <Layout>
         <div className="min-h-screen flex items-center justify-center">
@@ -110,29 +87,58 @@ export default function Settings() {
     return null;
   }
 
+  const handleSettingUpdate = (key: keyof SiteSettings, value: string | boolean | number) => {
+    // Update local state only - don't send to API yet
+    setLocalSettings(prev => ({
+      ...prev,
+      [key]: value
+    }));
+    setHasChanges(true);
+  };
+
   const handleSave = async () => {
-    setIsSaving(true);
-    try {
-      // Here you would save settings to the backend
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+    if (!hasChanges) {
       toast({
-        title: "Paramètres sauvegardés",
-        description: "Les paramètres ont été mis à jour avec succès.",
+        title: t('settings.noChanges'),
+        description: t('settings.noChangesDescription'),
+      });
+      return;
+    }
+
+    try {
+      console.log('💾 Saving settings to API:', localSettings);
+      
+      // Send all local changes to API
+      await updateMultipleSettings(localSettings);
+      
+      console.log('✅ Settings saved');
+      
+      // Reset change tracking
+      setHasChanges(false);
+      
+      // Show success message
+      toast({
+        title: t('settings.saved'),
+        description: t('settings.savedDescription'),
       });
     } catch (error) {
+      console.error('Error saving settings:', error);
       toast({
-        title: "Erreur",
-        description: "Une erreur s'est produite lors de la sauvegarde.",
+        title: t('settings.error'),
+        description: t('settings.errorDescription'),
         variant: "destructive",
       });
-    } finally {
-      setIsSaving(false);
     }
   };
 
-  const updateSetting = (key: keyof SiteSettings, value: string | boolean) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+  const handleReset = () => {
+    // Reset local settings to original values
+    setLocalSettings(settings);
+    setHasChanges(false);
+    toast({
+      title: t('settings.resetChanges'),
+      description: t('settings.resetDescription'),
+    });
   };
 
   return (
@@ -143,53 +149,68 @@ export default function Settings() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2" data-testid="settings-title">
-                Paramètres du site
+                {t('settings.title')}
               </h1>
               <p className="text-slate-600 dark:text-slate-400">
-                Configurez les paramètres généraux, l'apparence et les fonctionnalités du site
+                {t('settings.description')}
               </p>
             </div>
-            <Button 
-              onClick={handleSave}
-              disabled={isSaving}
-              className="bg-primary-600 hover:bg-primary-700"
-              data-testid="save-settings"
-            >
-              {isSaving ? (
-                <>
-                  <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                  Sauvegarde...
-                </>
-              ) : (
-                <>
-                  <Save className="mr-2 h-4 w-4" />
-                  Sauvegarder
-                </>
+            <div className="flex items-center space-x-3">
+              {hasChanges && (
+                <span className="text-sm text-amber-600 dark:text-amber-400 font-medium">
+                  {t('settings.unsavedChanges')}
+                </span>
               )}
-            </Button>
+              <Button 
+                onClick={handleReset}
+                disabled={!hasChanges || isUpdating}
+                variant="outline"
+                data-testid="reset-settings"
+              >
+                {t('settings.cancel')}
+              </Button>
+              <Button 
+                onClick={handleSave}
+                disabled={!hasChanges || isUpdating}
+                className="bg-primary-600 hover:bg-primary-700"
+                data-testid="save-settings"
+              >
+                {isUpdating ? (
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                    {t('settings.saving')}
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    {t('settings.save')}
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
 
           <Tabs defaultValue="general" className="space-y-8" data-testid="settings-tabs">
             <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="general">
                 <SettingsIcon className="mr-2 h-4 w-4" />
-                Général
+                {t('settings.tabs.general')}
               </TabsTrigger>
               <TabsTrigger value="contact">
                 <Mail className="mr-2 h-4 w-4" />
-                Contact
+                {t('settings.tabs.contact')}
               </TabsTrigger>
               <TabsTrigger value="features">
                 <Shield className="mr-2 h-4 w-4" />
-                Fonctionnalités
+                {t('settings.tabs.features')}
               </TabsTrigger>
               <TabsTrigger value="seo">
                 <Globe className="mr-2 h-4 w-4" />
-                SEO
+                {t('settings.tabs.seo')}
               </TabsTrigger>
               <TabsTrigger value="maintenance">
                 <Database className="mr-2 h-4 w-4" />
-                Maintenance
+                {t('settings.tabs.maintenance')}
               </TabsTrigger>
             </TabsList>
 
@@ -197,25 +218,25 @@ export default function Settings() {
             <TabsContent value="general" data-testid="general-settings">
               <Card>
                 <CardHeader>
-                  <CardTitle>Paramètres généraux</CardTitle>
+                  <CardTitle>{t('settings.general.title')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div>
-                    <Label htmlFor="siteName">Nom du site</Label>
+                    <Label htmlFor="site_title">{t('settings.general.siteName')}</Label>
                     <Input
-                      id="siteName"
-                      value={settings.siteName}
-                      onChange={(e) => updateSetting('siteName', e.target.value)}
+                      id="site_title"
+                      value={localSettings.site_title || ''}
+                      onChange={(e) => handleSettingUpdate('site_title', e.target.value)}
                       data-testid="input-site-name"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="siteDescription">Description du site</Label>
+                    <Label htmlFor="site_description">{t('settings.general.siteDescription')}</Label>
                     <Textarea
-                      id="siteDescription"
-                      value={settings.siteDescription}
-                      onChange={(e) => updateSetting('siteDescription', e.target.value)}
+                      id="site_description"
+                      value={localSettings.site_description || ''}
+                      onChange={(e) => handleSettingUpdate('site_description', e.target.value)}
                       rows={3}
                       data-testid="textarea-site-description"
                     />
@@ -224,37 +245,48 @@ export default function Settings() {
                   <Separator />
 
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Réseaux sociaux</h3>
+                    <h3 className="text-lg font-semibold">{t('settings.social.title')}</h3>
                     
                     <div>
-                      <Label htmlFor="linkedinUrl">URL LinkedIn</Label>
+                      <Label htmlFor="social_linkedin">URL LinkedIn</Label>
                       <Input
-                        id="linkedinUrl"
+                        id="social_linkedin"
                         placeholder="https://linkedin.com/company/..."
-                        value={settings.linkedinUrl}
-                        onChange={(e) => updateSetting('linkedinUrl', e.target.value)}
+                        value={localSettings.social_linkedin}
+                        onChange={(e) => handleSettingUpdate('social_linkedin', e.target.value)}
                         data-testid="input-linkedin"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="twitterUrl">URL Twitter</Label>
+                      <Label htmlFor="social_facebook">URL Facebook</Label>
                       <Input
-                        id="twitterUrl"
+                        id="social_facebook"
+                        placeholder="https://facebook.com/..."
+                        value={localSettings.social_facebook}
+                        onChange={(e) => handleSettingUpdate('social_facebook', e.target.value)}
+                        data-testid="input-facebook"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="social_twitter">URL Twitter</Label>
+                      <Input
+                        id="social_twitter"
                         placeholder="https://twitter.com/..."
-                        value={settings.twitterUrl}
-                        onChange={(e) => updateSetting('twitterUrl', e.target.value)}
+                        value={localSettings.social_twitter}
+                        onChange={(e) => handleSettingUpdate('social_twitter', e.target.value)}
                         data-testid="input-twitter"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="youtubeUrl">URL YouTube</Label>
+                      <Label htmlFor="social_youtube">URL YouTube</Label>
                       <Input
-                        id="youtubeUrl"
+                        id="social_youtube"
                         placeholder="https://youtube.com/channel/..."
-                        value={settings.youtubeUrl}
-                        onChange={(e) => updateSetting('youtubeUrl', e.target.value)}
+                        value={localSettings.social_youtube}
+                        onChange={(e) => handleSettingUpdate('social_youtube', e.target.value)}
                         data-testid="input-youtube"
                       />
                     </div>
@@ -271,32 +303,32 @@ export default function Settings() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div>
-                    <Label htmlFor="contactEmail">Email de contact</Label>
+                    <Label htmlFor="contact_email">Email de contact</Label>
                     <Input
-                      id="contactEmail"
+                      id="contact_email"
                       type="email"
-                      value={settings.contactEmail}
-                      onChange={(e) => updateSetting('contactEmail', e.target.value)}
+                      value={localSettings.contact_email}
+                      onChange={(e) => handleSettingUpdate('contact_email', e.target.value)}
                       data-testid="input-contact-email"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="contactPhone">Téléphone</Label>
+                    <Label htmlFor="contact_phone">Téléphone</Label>
                     <Input
-                      id="contactPhone"
-                      value={settings.contactPhone}
-                      onChange={(e) => updateSetting('contactPhone', e.target.value)}
+                      id="contact_phone"
+                      value={localSettings.contact_phone}
+                      onChange={(e) => handleSettingUpdate('contact_phone', e.target.value)}
                       data-testid="input-contact-phone"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="address">Adresse</Label>
+                    <Label htmlFor="contact_address">Adresse</Label>
                     <Textarea
-                      id="address"
-                      value={settings.address}
-                      onChange={(e) => updateSetting('address', e.target.value)}
+                      id="contact_address"
+                      value={localSettings.contact_address}
+                      onChange={(e) => handleSettingUpdate('contact_address', e.target.value)}
                       rows={3}
                       data-testid="textarea-address"
                     />
@@ -314,15 +346,15 @@ export default function Settings() {
                 <CardContent className="space-y-6">
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <Label htmlFor="darkMode">Mode sombre</Label>
+                      <Label htmlFor="enable_dark_mode">Mode sombre</Label>
                       <p className="text-sm text-slate-600 dark:text-slate-400">
                         Permettre aux utilisateurs de basculer en mode sombre
                       </p>
                     </div>
                     <Switch
-                      id="darkMode"
-                      checked={settings.darkModeEnabled}
-                      onCheckedChange={(checked) => updateSetting('darkModeEnabled', checked)}
+                      id="enable_dark_mode"
+                      checked={localSettings.enable_dark_mode || false}
+                      onCheckedChange={(checked) => handleSettingUpdate('enable_dark_mode', checked)}
                       data-testid="switch-dark-mode"
                     />
                   </div>
@@ -331,15 +363,15 @@ export default function Settings() {
 
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <Label htmlFor="multiLanguage">Support multilingue</Label>
+                      <Label htmlFor="enable_multilingual">Support multilingue</Label>
                       <p className="text-sm text-slate-600 dark:text-slate-400">
                         Activer la prise en charge de plusieurs langues
                       </p>
                     </div>
                     <Switch
-                      id="multiLanguage"
-                      checked={settings.multiLanguageEnabled}
-                      onCheckedChange={(checked) => updateSetting('multiLanguageEnabled', checked)}
+                      id="enable_multilingual"
+                      checked={localSettings.enable_multilingual || false}
+                      onCheckedChange={(checked) => handleSettingUpdate('enable_multilingual', checked)}
                       data-testid="switch-multilanguage"
                     />
                   </div>
@@ -348,55 +380,74 @@ export default function Settings() {
 
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <Label htmlFor="registration">Inscriptions ouvertes</Label>
+                      <Label htmlFor="enable_search">Recherche</Label>
                       <p className="text-sm text-slate-600 dark:text-slate-400">
-                        Permettre aux nouveaux utilisateurs de s'inscrire
+                        Activer la fonctionnalité de recherche sur le site
                       </p>
                     </div>
                     <Switch
-                      id="registration"
-                      checked={settings.registrationEnabled}
-                      onCheckedChange={(checked) => updateSetting('registrationEnabled', checked)}
-                      data-testid="switch-registration"
+                      id="enable_search"
+                      checked={localSettings.enable_search || false}
+                      onCheckedChange={(checked) => handleSettingUpdate('enable_search', checked)}
+                      data-testid="switch-search"
                     />
                   </div>
                 </CardContent>
               </Card>
             </TabsContent>
 
-            {/* SEO Settings */}
-            <TabsContent value="seo" data-testid="seo-settings">
+            {/* Display Limits Settings */}
+            <TabsContent value="seo" data-testid="display-limits-settings">
               <Card>
                 <CardHeader>
-                  <CardTitle>Référencement (SEO)</CardTitle>
+                  <CardTitle>Limites d'affichage</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div>
-                    <Label htmlFor="metaDescription">Meta description</Label>
-                    <Textarea
-                      id="metaDescription"
-                      value={settings.metaDescription}
-                      onChange={(e) => updateSetting('metaDescription', e.target.value)}
-                      rows={3}
-                      maxLength={160}
-                      data-testid="textarea-meta-description"
+                    <Label htmlFor="featured_projects_limit">Limite des projets en vedette</Label>
+                    <Input
+                      id="featured_projects_limit"
+                      type="number"
+                      min="1"
+                      max="20"
+                      value={localSettings.featured_projects_limit}
+                      onChange={(e) => handleSettingUpdate('featured_projects_limit', parseInt(e.target.value))}
+                      data-testid="input-projects-limit"
                     />
                     <p className="text-sm text-slate-500 mt-1">
-                      {settings.metaDescription.length}/160 caractères
+                      Nombre de projets à afficher sur la page d'accueil
                     </p>
                   </div>
 
                   <div>
-                    <Label htmlFor="metaKeywords">Mots-clés</Label>
+                    <Label htmlFor="featured_news_limit">Limite des actualités en vedette</Label>
                     <Input
-                      id="metaKeywords"
-                      value={settings.metaKeywords}
-                      onChange={(e) => updateSetting('metaKeywords', e.target.value)}
-                      placeholder="mot-clé1, mot-clé2, mot-clé3"
-                      data-testid="input-meta-keywords"
+                      id="featured_news_limit"
+                      type="number"
+                      min="1"
+                      max="20"
+                      value={localSettings.featured_news_limit}
+                      onChange={(e) => handleSettingUpdate('featured_news_limit', parseInt(e.target.value))}
+                      data-testid="input-news-limit"
                     />
                     <p className="text-sm text-slate-500 mt-1">
-                      Séparez les mots-clés par des virgules
+                      Nombre d'actualités à afficher sur la page d'accueil
+                    </p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="upcoming_events_limit">Limite des événements à venir</Label>
+                    <Input
+                      id="upcoming_events_limit"
+                      type="number"
+                      min="1"
+                      max="20"
+                      value={localSettings.upcoming_events_limit}
+                      onChange={(e) => handleSettingUpdate('upcoming_events_limit', parseInt(e.target.value))}
+                      data-testid="input-events-limit"
+                    />
+                    <p className="text-sm text-slate-500 mt-1">
+                      Nombre d'événements à afficher sur la page d'accueil
                     </p>
                   </div>
                 </CardContent>
@@ -419,19 +470,19 @@ export default function Settings() {
                     </div>
                     <Switch
                       id="maintenance"
-                      checked={settings.maintenanceMode}
-                      onCheckedChange={(checked) => updateSetting('maintenanceMode', checked)}
+                      checked={localSettings.maintenanceMode || false}
+                      onCheckedChange={(checked) => handleSettingUpdate('maintenanceMode', checked)}
                       data-testid="switch-maintenance"
                     />
                   </div>
 
-                  {settings.maintenanceMode && (
+                  {localSettings.maintenanceMode && (
                     <div>
                       <Label htmlFor="maintenanceMessage">Message de maintenance</Label>
                       <Textarea
                         id="maintenanceMessage"
-                        value={settings.maintenanceMessage}
-                        onChange={(e) => updateSetting('maintenanceMessage', e.target.value)}
+                        value={localSettings.maintenanceMessage}
+                        onChange={(e) => handleSettingUpdate('maintenanceMessage', e.target.value)}
                         rows={3}
                         data-testid="textarea-maintenance-message"
                       />

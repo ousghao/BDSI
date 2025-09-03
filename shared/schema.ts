@@ -9,6 +9,7 @@ import {
   integer,
   boolean,
   serial,
+  date,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -217,6 +218,49 @@ export const settings = pgTable("settings", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const featureFlags = pgTable("feature_flags", {
+  id: serial("id").primaryKey(),
+  key: varchar("key").notNull().unique(),
+  enabled: boolean("enabled").notNull().default(true),
+  updatedAt: timestamp("updated_at").defaultNow(),
+  updatedBy: varchar("updated_by").references(() => users.id),
+});
+
+// Admissions table
+export const admissions = pgTable("admissions", {
+  id: serial("id").primaryKey(),
+  fullName: text("full_name").notNull(),
+  email: varchar("email").notNull(),
+  phone: varchar("phone").notNull(),
+  nationalId: varchar("national_id").notNull(),
+  dob: date("dob").notNull(),
+  address: text("address").notNull(),
+  priorDegree: varchar("prior_degree").notNull(), // bac, licence, master, equivalent
+  gpaOrScore: varchar("gpa_or_score"),
+  programTrack: varchar("program_track"),
+  pdfUrl: varchar("pdf_url").notNull(),
+  status: varchar("status").default("submitted"), // submitted, under_review, accepted, rejected
+  notesAdmin: text("notes_admin"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Contact messages table
+export const contactMessages = pgTable("contact_messages", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: varchar("email").notNull(),
+  phone: varchar("phone"),
+  organization: text("organization"),
+  reason: varchar("reason").notNull(), // admission, program, partnership, etc.
+  subject: text("subject").notNull(),
+  message: text("message").notNull(),
+  status: varchar("status").default("new"), // new, read, replied, archived
+  adminNotes: text("admin_notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).pick({
   email: true,
@@ -273,6 +317,25 @@ export const insertSettingSchema = createInsertSchema(settings).omit({
   updatedAt: true,
 });
 
+export const insertFeatureFlagSchema = createInsertSchema(featureFlags).omit({
+  id: true,
+  updatedAt: true,
+});
+
+export const insertAdmissionSchema = createInsertSchema(admissions).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertContactMessageSchema = createInsertSchema(contactMessages).omit({
+  id: true,
+  status: true,
+  adminNotes: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Types
 export type UpsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -292,3 +355,9 @@ export type Testimonial = typeof testimonials.$inferSelect;
 export type InsertTestimonial = z.infer<typeof insertTestimonialSchema>;
 export type Setting = typeof settings.$inferSelect;
 export type InsertSetting = z.infer<typeof insertSettingSchema>;
+export type FeatureFlag = typeof featureFlags.$inferSelect;
+export type InsertFeatureFlag = z.infer<typeof insertFeatureFlagSchema>;
+export type Admission = typeof admissions.$inferSelect;
+export type InsertAdmission = z.infer<typeof insertAdmissionSchema>;
+export type ContactMessage = typeof contactMessages.$inferSelect;
+export type InsertContactMessage = z.infer<typeof insertContactMessageSchema>;

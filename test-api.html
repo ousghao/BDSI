@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API Settings</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test API Settings</h1>
+    
+    <div class="test-section info">
+        <h3>Instructions</h3>
+        <p>1. Assurez-vous que le serveur est démarré avec <code>npm run dev</code></p>
+        <p>2. Cliquez sur les boutons de test ci-dessous</p>
+        <p>3. Vérifiez la console du navigateur pour les logs détaillés</p>
+    </div>
+
+    <div class="test-section">
+        <h3>Test API Publique</h3>
+        <button onclick="testPublicAPI()">Test /api/settings</button>
+        <div id="public-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Test Maintenance Mode</h3>
+        <button onclick="testMaintenanceMode()">Vérifier Maintenance Mode</button>
+        <div id="maintenance-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Test Changement Maintenance</h3>
+        <button onclick="toggleMaintenance(true)">Activer Maintenance</button>
+        <button onclick="toggleMaintenance(false)">Désactiver Maintenance</button>
+        <div id="toggle-result"></div>
+    </div>
+
+    <script>
+        const baseUrl = 'http://localhost:3000';
+
+        async function testPublicAPI() {
+            const resultDiv = document.getElementById('public-result');
+            resultDiv.innerHTML = '<p>⏳ Test en cours...</p>';
+            
+            try {
+                const response = await fetch(`${baseUrl}/api/settings`);
+                const data = await response.json();
+                
+                console.log('📡 API Response:', data);
+                
+                if (data.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ API Publique Fonctionne</h4>
+                            <p><strong>Status:</strong> ${data.ok}</p>
+                            <p><strong>Maintenance Mode:</strong> ${data.settings?.maintenanceMode} (${typeof data.settings?.maintenanceMode})</p>
+                            <p><strong>Total Settings:</strong> ${Object.keys(data.settings || {}).length}</p>
+                            <details>
+                                <summary>Voir tous les paramètres</summary>
+                                <pre>${JSON.stringify(data.settings, null, 2)}</pre>
+                            </details>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ API Publique Erreur</h4>
+                            <p>${data.error || 'Erreur inconnue'}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Erreur de Connexion</h4>
+                        <p>${error.message}</p>
+                        <p>Vérifiez que le serveur est démarré sur ${baseUrl}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testMaintenanceMode() {
+            const resultDiv = document.getElementById('maintenance-result');
+            resultDiv.innerHTML = '<p>⏳ Vérification en cours...</p>';
+            
+            try {
+                const response = await fetch(`${baseUrl}/api/settings`);
+                const data = await response.json();
+                
+                if (data.ok && data.settings) {
+                    const maintenanceMode = data.settings.maintenanceMode;
+                    const isMaintenance = maintenanceMode === true || maintenanceMode === 'true';
+                    
+                    resultDiv.innerHTML = `
+                        <div class="${isMaintenance ? 'error' : 'success'}">
+                            <h4>${isMaintenance ? '🚧 Mode Maintenance ACTIF' : '✅ Site Normal'}</h4>
+                            <p><strong>Valeur:</strong> ${maintenanceMode} (${typeof maintenanceMode})</p>
+                            <p><strong>Type:</strong> ${typeof maintenanceMode}</p>
+                            <p><strong>Booléen:</strong> ${Boolean(maintenanceMode)}</p>
+                            <p><strong>Comparaison:</strong> maintenanceMode === true = ${maintenanceMode === true}</p>
+                            <p><strong>Comparaison String:</strong> maintenanceMode === 'true' = ${maintenanceMode === 'true'}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Erreur</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function toggleMaintenance(enable) {
+            const resultDiv = document.getElementById('toggle-result');
+            resultDiv.innerHTML = '<p>⏳ Changement en cours...</p>';
+            
+            try {
+                // Note: Cette fonction nécessite une authentification admin
+                // Elle échouera sans token, mais nous pouvons voir la structure
+                const response = await fetch(`${baseUrl}/api/admin/settings`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        maintenanceMode: enable
+                    }),
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Maintenance Mode ${enable ? 'activé' : 'désactivé'}</h4>
+                            <p>Réponse: ${JSON.stringify(data)}</p>
+                        </div>
+                    `;
+                } else {
+                    const errorData = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ Erreur d'authentification (attendu)</h4>
+                            <p>Status: ${response.status}</p>
+                            <p>Message: ${errorData.message || 'Authentification requise'}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Erreur</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Test automatique au chargement
+        window.addEventListener('load', () => {
+            console.log('🧪 Page de test chargée');
+            console.log('📍 URL de base:', baseUrl);
+        });
+    </script>
+</body>
+</html>

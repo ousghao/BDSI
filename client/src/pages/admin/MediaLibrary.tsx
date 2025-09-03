@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
-import { Layout } from "@/components/Layout/Layout";
+import { Layout } from "@/components/Layout";
 import { MediaUpload } from "@/components/admin/MediaUpload";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -71,6 +72,7 @@ const mockMediaFiles: MediaFile[] = [
 
 export default function MediaLibrary() {
   const { user, isAuthenticated, isLoading } = useAuth();
+  const { t } = useLanguage();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState("all");
@@ -82,8 +84,8 @@ export default function MediaLibrary() {
   useEffect(() => {
     if (!isLoading && (!isAuthenticated || user?.role !== 'admin')) {
       toast({
-        title: "Accès non autorisé",
-        description: "Vous devez être connecté en tant qu'administrateur.",
+        title: t('admin.unauthorized'),
+        description: t('admin.unauthorizedDescription'),
         variant: "destructive",
       });
       setTimeout(() => {
@@ -125,16 +127,16 @@ export default function MediaLibrary() {
   const handleCopyUrl = (url: string) => {
     navigator.clipboard.writeText(url);
     toast({
-      title: "URL copiée",
-      description: "L'URL du fichier a été copiée dans le presse-papiers.",
+      title: t('media.copied'),
+      description: t('media.copiedDescription'),
     });
   };
 
   const handleDelete = (id: string) => {
     setMediaFiles(prev => prev.filter(file => file.id !== id));
     toast({
-      title: "Fichier supprimé",
-      description: "Le fichier a été supprimé avec succès.",
+      title: t('media.deleted'),
+      description: t('media.deletedDescription'),
     });
   };
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Layout } from "@/components/Layout/Layout";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { Layout } from "@/components/Layout";
 import { NewsCard } from "@/components/NewsCard";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -9,15 +10,17 @@ import { Badge } from "@/components/ui/badge";
 import { Search, Filter, Calendar } from "lucide-react";
 import type { News } from "@shared/schema";
 
-const categories = [
-  { value: "all", label: "Toutes les catégories" },
-  { value: "event", label: "Événements" },
-  { value: "research", label: "Recherche" },
-  { value: "success_story", label: "Success Stories" },
-  { value: "announcement", label: "Annonces" },
-];
-
 export default function News() {
+  const { t } = useLanguage();
+  
+  const categories = [
+    { value: "all", label: t('news.categories.all') },
+    { value: "event", label: t('news.categories.events') },
+    { value: "research", label: t('news.categories.research') },
+    { value: "success_story", label: t('news.categories.successStories') },
+    { value: "announcement", label: t('news.categories.announcements') },
+  ];
+
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -46,10 +49,10 @@ export default function News() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl lg:text-5xl font-bold mb-4 font-playfair" data-testid="page-title">
-              Actualités
+              {t('news.title')}
             </h1>
             <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-              Restez informé de la vie du master, des événements et des actualités de notre communauté
+              {t('news.subtitle')}
             </p>
           </div>
         </div>
@@ -62,12 +65,12 @@ export default function News() {
             <div className="flex flex-col sm:flex-row gap-4 items-center">
               <div className="flex items-center gap-2">
                 <Filter className="h-5 w-5 text-slate-600 dark:text-slate-400" />
-                <span className="font-medium text-slate-700 dark:text-slate-300">Filtres:</span>
+                <span className="font-medium text-slate-700 dark:text-slate-300">{t('news.filters')}:</span>
               </div>
               
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger className="w-64" data-testid="category-filter">
-                  <SelectValue placeholder="Sélectionner une catégorie" />
+                  <SelectValue placeholder={t('news.selectCategory')} />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((category) => (
@@ -86,7 +89,7 @@ export default function News() {
             <div className="relative w-full lg:w-80">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input
-                placeholder="Rechercher dans les actualités..."
+                placeholder={t('news.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"

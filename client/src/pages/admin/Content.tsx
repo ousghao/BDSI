@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
-import { Layout } from "@/components/Layout/Layout";
+import { Layout } from "@/components/Layout";
 import { ContentEditor } from "@/components/admin/ContentEditor";
 import { PageToggle } from "@/components/admin/PageToggle";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,9 +26,16 @@ import {
   Users as UsersIcon
 } from "lucide-react";
 import type { Project, News, Event, Course, Faculty } from "@shared/schema";
+import { ProjectForm } from "@/admin/forms/ProjectForm";
+import { NewsForm } from "@/admin/forms/NewsForm";
+import { EventForm } from "@/admin/forms/EventForm";
+import { MediaForm } from "@/admin/forms/MediaForm";
+import { CourseForm } from "@/admin/forms/CourseForm";
+import { FacultyForm } from "@/admin/forms/FacultyForm";
 
 export default function Content() {
   const { user, isAuthenticated, isLoading } = useAuth();
+  const { t } = useLanguage();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("projects");
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,8 +46,8 @@ export default function Content() {
   useEffect(() => {
     if (!isLoading && (!isAuthenticated || user?.role !== 'admin')) {
       toast({
-        title: "Accès non autorisé",
-        description: "Vous devez être connecté en tant qu'administrateur.",
+        title: t('admin.unauthorized'),
+        description: t('admin.unauthorizedDescription'),
         variant: "destructive",
       });
       setTimeout(() => {
@@ -89,8 +97,15 @@ export default function Content() {
   }
 
   const handleEdit = (item: any, type: string) => {
-    setEditingItem(item);
-    setEditingType(type);
+    if (item === null) {
+      // Creating new item - show form
+      setEditingItem({ type: 'new', contentType: type });
+      setEditingType(type);
+    } else {
+      // Editing existing item - show ContentEditor
+      setEditingItem(item);
+      setEditingType(type);
+    }
   };
 
   const handleCloseEditor = () => {
@@ -114,15 +129,50 @@ export default function Content() {
   const filteredFaculty = filterData(faculty || [], searchQuery);
 
   if (editingItem) {
-    return (
-      <Layout>
-        <ContentEditor
-          item={editingItem}
-          type={editingType}
-          onClose={handleCloseEditor}
-        />
-      </Layout>
-    );
+    // Check if we're creating a new item or editing existing
+    if (editingItem.type === 'new') {
+      // Show form for new item
+      return (
+        <Layout>
+          <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-8">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="mb-8">
+                <Button
+                  variant="ghost"
+                  onClick={handleCloseEditor}
+                  className="mb-4"
+                >
+                  ← Retour
+                </Button>
+                <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+                  {editingType === 'project' && 'Nouveau Projet'}
+                  {editingType === 'news' && 'Nouvelle Actualité'}
+                  {editingType === 'event' && (editingItem?.type === 'new' ? 'Nouvel Événement' : 'Modifier Événement')}
+                  {editingType === 'media' && 'Nouveau Média'}
+                </h1>
+              </div>
+              {editingType === 'project' && <ProjectForm onClose={handleCloseEditor} />}
+              {editingType === 'news' && <NewsForm onClose={handleCloseEditor} />}
+              {editingType === 'event' && <EventForm event={editingItem?.type === 'new' ? null : editingItem} onClose={handleCloseEditor} />}
+              {editingType === 'media' && <MediaForm onClose={handleCloseEditor} />}
+              {editingType === 'course' && <CourseForm onClose={handleCloseEditor} />}
+              {editingType === 'faculty' && <FacultyForm onClose={handleCloseEditor} />}
+            </div>
+          </div>
+        </Layout>
+      );
+    } else {
+      // Show ContentEditor for existing item
+      return (
+        <Layout>
+          <ContentEditor
+            item={editingItem}
+            type={editingType}
+            onClose={handleCloseEditor}
+          />
+        </Layout>
+      );
+    }
   }
 
   return (
@@ -132,10 +182,10 @@ export default function Content() {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2" data-testid="content-title">
-              Gestion du contenu
+              {t('content.title')}
             </h1>
             <p className="text-slate-600 dark:text-slate-400">
-              Créez, modifiez et gérez tout le contenu du site
+              {t('content.description')}
             </p>
           </div>
 
@@ -154,7 +204,7 @@ export default function Content() {
             <div className="relative max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input
-                placeholder="Rechercher du contenu..."
+                placeholder={t('content.search.placeholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -168,23 +218,23 @@ export default function Content() {
             <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="projects" className="flex items-center">
                 <FileText className="mr-2 h-4 w-4" />
-                Projets
+                {t('content.tabs.projects')}
               </TabsTrigger>
               <TabsTrigger value="news" className="flex items-center">
                 <FileText className="mr-2 h-4 w-4" />
-                Actualités
+                {t('content.tabs.news')}
               </TabsTrigger>
               <TabsTrigger value="events" className="flex items-center">
                 <Calendar className="mr-2 h-4 w-4" />
-                Événements
+                {t('content.tabs.events')}
               </TabsTrigger>
               <TabsTrigger value="courses" className="flex items-center">
                 <BookOpen className="mr-2 h-4 w-4" />
-                Cours
+                {t('content.tabs.courses')}
               </TabsTrigger>
               <TabsTrigger value="faculty" className="flex items-center">
                 <UsersIcon className="mr-2 h-4 w-4" />
-                Équipe
+                {t('content.tabs.faculty')}
               </TabsTrigger>
             </TabsList>
 
@@ -192,12 +242,13 @@ export default function Content() {
             <TabsContent value="projects" data-testid="projects-content">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle>Projets ({filteredProjects.length})</CardTitle>
+                  <CardTitle>{t('content.tabs.projects')} ({filteredProjects.length})</CardTitle>
                   <Button 
                     onClick={() => handleEdit(null, 'project')}
                     data-testid="add-project"
                   >
                     <Plus className="mr-2 h-4 w-4" />
+                    {t('content.add.new')}
                     Nouveau projet
                   </Button>
                 </CardHeader>

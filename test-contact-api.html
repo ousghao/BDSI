@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Contact API</title>
+</head>
+<body>
+    <h1>Test Contact API</h1>
+    <button id="testBtn">Tester l'API Contact</button>
+    <div id="result"></div>
+
+    <script>
+    document.getElementById('testBtn').addEventListener('click', async () => {
+        const testData = {
+            name: "Test User",
+            email: "test@example.com",
+            phone: "+212 6XX XX XX XX",
+            organization: "Test Company",
+            reason: "admission",
+            subject: "Test de l'API",
+            message: "Ceci est un test du formulaire de contact."
+        };
+
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(testData),
+            });
+
+            const result = await response.json();
+            document.getElementById('result').innerHTML = `
+                <h3>Résultat:</h3>
+                <p><strong>Status:</strong> ${response.status}</p>
+                <p><strong>Response:</strong></p>
+                <pre>${JSON.stringify(result, null, 2)}</pre>
+            `;
+        } catch (error) {
+            document.getElementById('result').innerHTML = `
+                <h3>Erreur:</h3>
+                <p style="color: red;">${error.message}</p>
+            `;
+        }
+    });
+    </script>
+</body>
+</html>

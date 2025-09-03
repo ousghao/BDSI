@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { Layout } from "@/components/Layout/Layout";
+import { Link } from "wouter";
+import { Layout } from "@/components/Layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,36 +12,77 @@ import type { Course } from "@shared/schema";
 
 const programData = {
   overview: {
-    title: "Master Big Data & Systèmes Intelligents",
+    title: "Master Big Data & Systèmes Intelligents (BDSaS)",
     duration: "4 semestres (2 ans)",
     credits: "120 ECTS",
-    degree: "Master professionnel",
-    language: "Français, Anglais",
-    location: "Faculté des Sciences Dhar El Mehraz, Fès"
+    degree: "Master de recherche",
+    language: "Français & Anglais",
+    location: "Faculté des Sciences, Université Sidi Mohamed Ben Abdellah (Fès)"
   },
   objectives: [
     "Maîtriser les technologies Big Data et les systèmes de traitement distribué",
     "Développer des compétences en intelligence artificielle et machine learning",
     "Concevoir et implémenter des solutions analytiques complexes",
-    "Gérer des projets data science de bout en bout",
+    "Gérer des projets de data science de bout en bout",
     "Comprendre les enjeux éthiques et légaux des données"
   ],
   skills: [
-    "Programmation (Python, R, Scala, Java)",
-    "Frameworks Big Data (Hadoop, Spark, Kafka)",
-    "Machine Learning et Deep Learning",
-    "Bases de données NoSQL et NewSQL",
-    "Visualisation et Business Intelligence",
-    "Cloud Computing et architectures distribuées"
+    "Vision par ordinateur et reconnaissance automatique de la parole",
+    "Data Mining et apprentissage automatique",
+    "Fondements de l'IA avec Python",
+    "Analyse des grands réseaux et théorie des graphes",
+    "Informatique décisionnelle et analyse de données spatiales",
+    "Big Data Analytics et traitement distribué",
+    "Internet des objets & informatique en périphérie",
+    "Cybersécurité & Cloud Computing",
+    "Deep Learning & Reinforcement Learning",
+    "Traitement du langage naturel & fouille de texte",
+    "Blockchain & applications décentralisées",
+    "Intelligence computationnelle et agents intelligents"
   ],
-  careers: [
-    "Data Scientist",
-    "Ingénieur Big Data",
-    "Architecte de données",
-    "Consultant en intelligence artificielle",
-    "Chef de projet data",
-    "Chercheur en IA"
-  ]
+  careers: {
+    dataScience: [
+      "Data Scientist",
+      "Data Analyst"
+    ],
+    ai: [
+      "Développeur IA",
+      "Entrepreneur IA",
+      "Ingénieur R&D"
+    ],
+    digital: [
+      "Consultant en transformation digitale",
+      "Ingénieur-conseil",
+      "Ingénieur concepteur d'outils"
+    ],
+    research: [
+      "Chercheur en centre public/privé",
+      "Doctorant en IA/Big Data"
+    ]
+  },
+  admission: {
+    requirements: [
+      "Licence (informatique, sciences et techniques, ou professionnelle)",
+      "Licence parcours d'excellence",
+      "Bachelor"
+    ],
+    prerequisites: [
+      "Algorithmique et structures de données",
+      "Programmation (orientée objet de préférence)",
+      "Systèmes d'exploitation",
+      "Bases de données & SGBD",
+      "Technologies Web",
+      "Probabilités & statistiques"
+    ],
+    selection: [
+      "Étude de dossier (mentions, notes, matières principales, nombre d'années d'études)",
+      "Test écrit basé sur le programme de licence SMI comprenant :",
+      "• Structures de données & programmation",
+      "• Bases de données & systèmes d'exploitation", 
+      "• Technologies du Web & systèmes d'information",
+      "• Probabilités & statistiques"
+    ]
+  }
 };
 
 export default function Program() {
@@ -138,11 +180,12 @@ export default function Program() {
       <section className="py-20 bg-slate-50 dark:bg-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs defaultValue="objectives" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-12" data-testid="program-tabs">
+            <TabsList className="grid w-full grid-cols-5 mb-12" data-testid="program-tabs">
               <TabsTrigger value="objectives">Objectifs</TabsTrigger>
               <TabsTrigger value="skills">Compétences</TabsTrigger>
               <TabsTrigger value="careers">Débouchés</TabsTrigger>
               <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
+              <TabsTrigger value="admission">Admission</TabsTrigger>
             </TabsList>
             
             <TabsContent value="objectives" data-testid="objectives-content">
@@ -187,16 +230,66 @@ export default function Program() {
                   <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
                     Débouchés professionnels
                   </h3>
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {programData.careers.map((career, index) => (
-                      <Badge 
-                        key={index} 
-                        variant="secondary" 
-                        className="p-3 justify-center text-center"
-                      >
-                        {career}
-                      </Badge>
-                    ))}
+                  <p className="text-slate-600 dark:text-slate-400 mb-6">
+                    Les diplômés peuvent exercer dans quatre domaines principaux :
+                  </p>
+                  
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div>
+                      <h4 className="font-semibold text-primary-600 mb-3 flex items-center">
+                        <Target className="h-5 w-5 mr-2" />
+                        Data Science & Analytics
+                      </h4>
+                      <div className="space-y-2">
+                        {programData.careers.dataScience.map((career, index) => (
+                          <Badge key={index} variant="secondary" className="block w-fit">
+                            {career}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-semibold text-primary-600 mb-3 flex items-center">
+                        <Target className="h-5 w-5 mr-2" />
+                        Intelligence Artificielle
+                      </h4>
+                      <div className="space-y-2">
+                        {programData.careers.ai.map((career, index) => (
+                          <Badge key={index} variant="secondary" className="block w-fit">
+                            {career}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-semibold text-primary-600 mb-3 flex items-center">
+                        <Target className="h-5 w-5 mr-2" />
+                        Transformation Digitale
+                      </h4>
+                      <div className="space-y-2">
+                        {programData.careers.digital.map((career, index) => (
+                          <Badge key={index} variant="secondary" className="block w-fit">
+                            {career}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-semibold text-primary-600 mb-3 flex items-center">
+                        <Target className="h-5 w-5 mr-2" />
+                        Recherche
+                      </h4>
+                      <div className="space-y-2">
+                        {programData.careers.research.map((career, index) => (
+                          <Badge key={index} variant="secondary" className="block w-fit">
+                            {career}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -282,6 +375,63 @@ export default function Program() {
                 )}
               </div>
             </TabsContent>
+            
+            <TabsContent value="admission" data-testid="admission-content">
+              <div className="grid md:grid-cols-3 gap-6">
+                <Card>
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center">
+                      <Award className="h-5 w-5 text-primary-600 mr-2" />
+                      Conditions d'accès
+                    </h4>
+                    <div className="space-y-3">
+                      {programData.admission.requirements.map((req, index) => (
+                        <div key={index} className="flex items-start space-x-2">
+                          <CheckCircle className="h-4 w-4 text-emerald-600 mt-1 flex-shrink-0" />
+                          <p className="text-sm text-slate-600 dark:text-slate-400">{req}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center">
+                      <BookOpen className="h-5 w-5 text-primary-600 mr-2" />
+                      Prérequis pédagogiques
+                    </h4>
+                    <div className="space-y-3">
+                      {programData.admission.prerequisites.map((prereq, index) => (
+                        <div key={index} className="flex items-start space-x-2">
+                          <CheckCircle className="h-4 w-4 text-emerald-600 mt-1 flex-shrink-0" />
+                          <p className="text-sm text-slate-600 dark:text-slate-400">{prereq}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardContent className="p-6">
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center">
+                      <Target className="h-5 w-5 text-primary-600 mr-2" />
+                      Procédure de sélection
+                    </h4>
+                    <div className="space-y-3">
+                      {programData.admission.selection.map((step, index) => (
+                        <div key={index} className="flex items-start space-x-2">
+                          <div className="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
+                            {step.startsWith('•') ? '•' : index + 1}
+                          </div>
+                          <p className="text-sm text-slate-600 dark:text-slate-400">{step}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
           </Tabs>
         </div>
       </section>
@@ -296,19 +446,23 @@ export default function Program() {
             Découvrez comment postuler et rejoindre notre communauté d'étudiants passionnés
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              className="bg-accent-500 hover:bg-accent-600 text-white px-8 py-3"
-              data-testid="apply-btn"
-            >
-              Candidater maintenant
-            </Button>
-            <Button 
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-primary-600 px-8 py-3"
-              data-testid="contact-btn"
-            >
-              Nous contacter
-            </Button>
+            <Link href="/admissions">
+              <Button 
+                className="bg-accent-500 hover:bg-accent-600 text-white px-8 py-3"
+                data-testid="apply-btn"
+              >
+                Candidater maintenant
+              </Button>
+            </Link>
+            <Link href="/contact">
+              <Button 
+                variant="outline"
+                className="border-white text-white hover:bg-white hover:text-primary-600 px-8 py-3"
+                data-testid="contact-btn"
+              >
+                Nous contacter
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

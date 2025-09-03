@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Layout } from "@/components/Layout/Layout";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { Layout } from "@/components/Layout";
 import { EventCard } from "@/components/EventCard";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,15 +11,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, Search, Filter, Clock, MapPin, Users } from "lucide-react";
 import type { Event } from "@shared/schema";
 
-const eventTypes = [
-  { value: "all", label: "Tous les types" },
-  { value: "seminar", label: "Séminaires" },
-  { value: "defense", label: "Soutenances" },
-  { value: "workshop", label: "Workshops" },
-  { value: "meetup", label: "Meetups" },
-];
-
 export default function Events() {
+  const { t } = useLanguage();
+  
+  const eventTypes = [
+    { value: "all", label: t('events.types.all') },
+    { value: "seminar", label: t('events.types.seminars') },
+    { value: "defense", label: t('events.types.defenses') },
+    { value: "workshop", label: t('events.types.workshops') },
+    { value: "meetup", label: t('events.types.meetups') },
+  ];
+
   const [selectedType, setSelectedType] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"upcoming" | "all">("upcoming");
@@ -55,10 +58,10 @@ export default function Events() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl lg:text-5xl font-bold mb-4 font-playfair" data-testid="page-title">
-              Événements
+              {t('events.title')}
             </h1>
             <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-              Participez aux séminaires, workshops et événements qui enrichissent votre parcours académique
+              {t('events.subtitle')}
             </p>
           </div>
         </div>
@@ -74,7 +77,7 @@ export default function Events() {
                 <div className="text-2xl font-bold text-slate-900 dark:text-white">
                   {upcomingEvents?.length || 0}
                 </div>
-                <p className="text-slate-600 dark:text-slate-400">Événements à venir</p>
+                <p className="text-slate-600 dark:text-slate-400">{t('events.upcoming')}</p>
               </CardContent>
             </Card>
             

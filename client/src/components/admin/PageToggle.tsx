@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useFeatureFlags } from "@/hooks/useFeatureFlags";
 import { 
   Eye, 
   EyeOff, 
@@ -33,7 +34,16 @@ interface PageSettings {
 
 export function PageToggle() {
   const { toast } = useToast();
-  const [isSaving, setIsSaving] = useState(false);
+  const { 
+    flags, 
+    isLoading, 
+    error, 
+    isEnabled, 
+    updateFlag, 
+    isUpdating, 
+    seedFlags, 
+    isSeeding 
+  } = useFeatureFlags();
   
   const [pages, setPages] = useState<PageSettings[]>([
     // Main pages
@@ -133,7 +143,21 @@ export function PageToggle() {
     }
   ]);
 
+  // Update pages state when flags change
+  useEffect(() => {
+    if (flags.length > 0) {
+      setPages(prev => prev.map(page => ({
+        ...page,
+        isActive: isEnabled(page.id)
+      })));
+    }
+  }, [flags, isEnabled]);
+
   const togglePage = (pageId: string) => {
+    const currentEnabled = isEnabled(pageId);
+    updateFlag({ key: pageId, enabled: !currentEnabled });
+    
+    // Optimistic update
     setPages(prev => prev.map(page => 
       page.id === pageId 
         ? { ...page, isActive: !page.isActive }
@@ -142,10 +166,9 @@ export function PageToggle() {
   };
 
   const handleSave = async () => {
-    setIsSaving(true);
     try {
-      // Here you would save to the backend
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Seed any missing flags
+      await seedFlags();
       
       toast({
         title: "Configuration sauvegardée",
@@ -157,8 +180,6 @@ export function PageToggle() {
         description: "Une erreur s'est produite lors de la sauvegarde.",
         variant: "destructive",
       });
-    } finally {
-      setIsSaving(false);
     }
   };
 
@@ -189,11 +210,11 @@ export function PageToggle() {
         </div>
         <Button 
           onClick={handleSave}
-          disabled={isSaving}
+          disabled={isUpdating || isSeeding}
           className="bg-primary-600 hover:bg-primary-700"
           data-testid="save-page-settings"
         >
-          {isSaving ? (
+          {isUpdating || isSeeding ? (
             <>
               <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
               Sauvegarde...
@@ -262,6 +283,7 @@ export function PageToggle() {
                         id={`toggle-${page.id}`}
                         checked={page.isActive}
                         onCheckedChange={() => togglePage(page.id)}
+                        disabled={isUpdating}
                         data-testid={`switch-${page.id}`}
                       />
                     </div>

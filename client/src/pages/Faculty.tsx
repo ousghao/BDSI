@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { Layout } from "@/components/Layout/Layout";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { Layout } from "@/components/Layout";
 import { FacultyCard } from "@/components/FacultyCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +8,7 @@ import { Mail, Phone, Globe, Users, Award, BookOpen } from "lucide-react";
 import type { Faculty } from "@shared/schema";
 
 export default function Faculty() {
+  const { t } = useLanguage();
   const { data: faculty, isLoading } = useQuery<Faculty[]>({
     queryKey: ["/api/faculty"],
   });
@@ -30,11 +32,10 @@ export default function Faculty() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl lg:text-5xl font-bold mb-4 font-playfair" data-testid="page-title">
-              Équipe Pédagogique
+              {t('faculty.title')}
             </h1>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Apprenez auprès d'experts reconnus dans leurs domaines et bénéficiez de leur expérience 
-              en recherche et en industrie
+              {t('faculty.subtitle')}
             </p>
           </div>
         </div>

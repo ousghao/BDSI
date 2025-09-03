@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Big Data & Systèmes Intelligents - FS Dhar El Mehraz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'playfair': ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a'
+                        },
+                        accent: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            },
+            darkMode: 'class',
+        }
+    </script>
+</head>
+<body class="font-inter bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-200 transition-colors duration-300">
+
+    <!-- @COMPONENT: Header Navigation -->
+    <header class="bg-white dark:bg-slate-800 shadow-lg border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-graduation-cap text-white text-xl"></i>
+                    </div>
+                    <div class="hidden sm:block">
+                        <h1 class="text-xl font-bold text-slate-900 dark:text-white">Master BDSI</h1>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">FS Dhar El Mehraz</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:flex items-center space-x-8">
+                    <a href="#" class="text-slate-700 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors">Accueil</a>
+                    <div class="relative group">
+                        <button class="flex items-center text-slate-700 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors">
+                            Programme <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                        <!-- Dropdown would be implemented here -->
+                    </div>
+                    <a href="#" class="text-slate-700 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors">Projets</a>
+                    <a href="#" class="text-slate-700 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors">Actualités</a>
+                    <a href="#" class="text-slate-700 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors">Contact</a>
+                </nav>
+
+                <!-- Controls -->
+                <div class="flex items-center space-x-4">
+                    <!-- Language Selector -->
+                    <select class="bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        <option>FR</option>
+                        <option>EN</option>
+                        <option>AR</option>
+                    </select>
+
+                    <!-- Dark Mode Toggle -->
+                    <button id="darkModeToggle" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+                        <i class="fas fa-moon dark:hidden text-slate-600"></i>
+                        <i class="fas fa-sun hidden dark:block text-accent-400"></i>
+                    </button>
+
+                    <!-- Mobile Menu Button -->
+                    <button class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                        <i class="fas fa-bars text-slate-700 dark:text-slate-200"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- @END_COMPONENT: Header Navigation -->
+
+    <!-- @COMPONENT: Hero Section -->
+    <section class="relative bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 text-white overflow-hidden">
+        <!-- Modern university campus with students collaborating on laptops -->
+        <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080');"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-primary-900/90 to-primary-700/80 dark:from-slate-900/90 dark:to-slate-700/80"></div>
+        
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+            <div class="lg:grid lg:grid-cols-2 lg:gap-12 items-center">
+                <div class="animate-fade-in">
+                    <h1 class="text-4xl lg:text-6xl font-bold mb-6 font-playfair">
+                        Master <span class="text-accent-400">Big Data</span><br>
+                        & Systèmes Intelligents
+                    </h1>
+                    <p class="text-xl lg:text-2xl text-blue-100 mb-8 leading-relaxed">
+                        Formez-vous aux technologies d'avenir et devenez expert en intelligence artificielle et analyse de données massives.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#program" class="bg-accent-500 hover:bg-accent-600 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105 text-center">
+                            Découvrir le Programme
+                        </a>
+                        <a href="#projects" class="border-2 border-white text-white hover:bg-white hover:text-primary-900 px-8 py-4 rounded-xl font-semibold transition-all duration-300 text-center">
+                            Voir les Projets
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="mt-12 lg:mt-0 animate-slide-up">
+                    <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
+                        <h3 class="text-2xl font-bold mb-6">Chiffres Clés</h3>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-accent-400">95%</div>
+                                <div class="text-blue-100">Taux d'insertion</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-accent-400">50+</div>
+                                <div class="text-blue-100">Projets réalisés</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-accent-400">25+</div>
+                                <div class="text-blue-100">Partenaires</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-accent-400">12</div>
+                                <div class="text-blue-100">Publications</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Hero Section -->
+
+    <!-- @COMPONENT: Featured Projects Section -->
+    <section id="projects" class="py-20 bg-white dark:bg-slate-800 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-4 font-playfair">Projets Vedettes</h2>
+                <p class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                    Découvrez les innovations développées par nos étudiants et leurs impacts concrets
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- @MAP: featuredProjects.map(project => ( -->
+                <!-- Project Card 1 -->
+                <div class="bg-slate-50 dark:bg-slate-700 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
+                    <!-- AI and machine learning visualization with neural networks -->
+                    <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400" alt="Neural network visualization" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <span class="bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 px-3 py-1 rounded-full text-sm font-medium">IA/ML</span>
+                            <span class="bg-accent-100 dark:bg-accent-900 text-accent-700 dark:text-accent-300 px-3 py-1 rounded-full text-sm font-medium ml-2">Prix Excellence</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Système de Diagnostic Médical par IA</h3>
+                        <p class="text-slate-600 dark:text-slate-400 mb-4">
+                            Développement d'un système de diagnostic automatique utilisant l'apprentissage profond pour détecter les anomalies dans les radiographies pulmonaires.
+                        </p>
+                        <div class="flex items-center text-sm text-slate-500 dark:text-slate-400 mb-4">
+                            <i class="fas fa-user-graduate mr-2"></i>
+                            <span data-bind="project.students">Amira Ben Ali, Mohammed Tazi</span>
+                        </div>
+                        <a href="#" class="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium group-hover:translate-x-1 transition-transform duration-300">
+                            Voir le projet <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project Card 2 -->
+                <div class="bg-slate-50 dark:bg-slate-700 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
+                    <!-- Big data analytics dashboard with multiple screens showing data visualization -->
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400" alt="Data analytics dashboard" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <span class="bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 px-3 py-1 rounded-full text-sm font-medium">Data Engineering</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Plateforme d'Analyse du Trafic Urbain</h3>
+                        <p class="text-slate-600 dark:text-slate-400 mb-4">
+                            Architecture Big Data en temps réel pour l'analyse des flux de circulation et l'optimisation des feux de signalisation.
+                        </p>
+                        <div class="flex items-center text-sm text-slate-500 dark:text-slate-400 mb-4">
+                            <i class="fas fa-user-graduate mr-2"></i>
+                            <span data-bind="project.students">Youssef Alami, Sara El Mansouri</span>
+                        </div>
+                        <a href="#" class="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium group-hover:translate-x-1 transition-transform duration-300">
+                            Voir le projet <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project Card 3 -->
+                <div class="bg-slate-50 dark:bg-slate-700 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
+                    <!-- Natural language processing concept with text analysis and Arabic/French text -->
+                    <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400" alt="Text analysis and NLP interface" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <span class="bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-sm font-medium">NLP</span>
+                            <span class="bg-accent-100 dark:bg-accent-900 text-accent-700 dark:text-accent-300 px-3 py-1 rounded-full text-sm font-medium ml-2">Innovation</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Analyseur de Sentiment Multilingue</h3>
+                        <p class="text-slate-600 dark:text-slate-400 mb-4">
+                            Outil d'analyse de sentiment supportant l'arabe, le français et l'anglais pour l'étude des réseaux sociaux et avis clients.
+                        </p>
+                        <div class="flex items-center text-sm text-slate-500 dark:text-slate-400 mb-4">
+                            <i class="fas fa-user-graduate mr-2"></i>
+                            <span data-bind="project.students">Fatima Zohra Kandil, Ahmed Bennani</span>
+                        </div>
+                        <a href="#" class="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium group-hover:translate-x-1 transition-transform duration-300">
+                            Voir le projet <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="#" class="inline-flex items-center bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg">
+                    <i class="fas fa-folder-open mr-3"></i>
+                    Voir tous les projets
+                </a>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Featured Projects Section -->
+
+    <!-- @COMPONENT: Program Overview -->
+    <section id="program" class="py-20 bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
+                <div>
+                    <h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-6 font-playfair">
+                        Un Programme d'Excellence
+                    </h2>
+                    <p class="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
+                        Notre master combine théorie avancée et pratique intensive pour former les futurs experts en Big Data et systèmes intelligents.
+                    </p>
+                    
+                    <div class="grid sm:grid-cols-2 gap-6 mb-8">
+                        <div class="flex items-start space-x-3">
+                            <div class="bg-primary-100 dark:bg-primary-900 p-2 rounded-lg">
+                                <i class="fas fa-brain text-primary-600 dark:text-primary-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-900 dark:text-white">Intelligence Artificielle</h4>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm">Machine Learning, Deep Learning, Vision par ordinateur</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="bg-emerald-100 dark:bg-emerald-900 p-2 rounded-lg">
+                                <i class="fas fa-database text-emerald-600 dark:text-emerald-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-900 dark:text-white">Big Data</h4>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm">Hadoop, Spark, NoSQL, Streaming temps réel</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="bg-purple-100 dark:bg-purple-900 p-2 rounded-lg">
+                                <i class="fas fa-language text-purple-600 dark:text-purple-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-900 dark:text-white">Traitement du Langage</h4>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm">NLP, Analyse textuelle, Chatbots</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="bg-orange-100 dark:bg-orange-900 p-2 rounded-lg">
+                                <i class="fas fa-microchip text-orange-600 dark:text-orange-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-slate-900 dark:text-white">Systèmes Intelligents</h4>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm">IoT, Systèmes embarqués, Edge Computing</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="#" class="inline-flex items-center bg-accent-500 hover:bg-accent-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300">
+                        Programme détaillé <i class="fas fa-chevron-right ml-2"></i>
+                    </a>
+                </div>
+
+                <div class="mt-12 lg:mt-0">
+                    <!-- Students working on computers in a modern laboratory setting -->
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Students collaborating in computer lab" class="rounded-2xl shadow-xl animate-float">
+                    
+                    <!-- Floating Achievement Card -->
+                    <div class="relative -mt-16 ml-8 bg-white dark:bg-slate-700 rounded-xl p-6 shadow-xl max-w-sm animate-slide-up">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-accent-100 dark:bg-accent-900 p-2 rounded-lg">
+                                <i class="fas fa-award text-accent-600 dark:text-accent-400"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-semibold text-slate-900 dark:text-white">Formation Accréditée</h4>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm">Master professionnel reconnu</p>
+                            </div>
+                        </div>
+                        <div class="text-2xl font-bold text-primary-600 dark:text-primary-400">4 Semestres</div>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm">120 ECTS • Stage en entreprise</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Program Overview -->
+
+    <!-- @COMPONENT: News & Events -->
+    <section class="py-20 bg-white dark:bg-slate-800 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-4 font-playfair">Actualités & Événements</h2>
+                <p class="text-xl text-slate-600 dark:text-slate-400">Restez informé de la vie du master et des opportunités</p>
+            </div>
+
+            <div class="lg:grid lg:grid-cols-3 lg:gap-12">
+                <!-- News Column -->
+                <div class="lg:col-span-2">
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Dernières Actualités</h3>
+                        <a href="#" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
+                            Voir toutes les actualités <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+
+                    <div class="space-y-8">
+                        <!-- @MAP: news.slice(0, 3).map(article => ( -->
+                        <!-- News Article 1 -->
+                        <article class="group">
+                            <div class="lg:grid lg:grid-cols-3 lg:gap-6">
+                                <!-- Technology conference with speakers presenting AI and data science -->
+                                <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250" alt="Technology conference presentation" class="w-full lg:w-auto h-48 lg:h-32 object-cover rounded-xl group-hover:shadow-lg transition-shadow duration-300">
+                                <div class="lg:col-span-2 mt-4 lg:mt-0">
+                                    <div class="flex items-center text-sm text-slate-500 dark:text-slate-400 mb-2">
+                                        <span data-bind="article.category">Événement</span>
+                                        <span class="mx-2">•</span>
+                                        <span data-bind="article.date">15 Mars 2024</span>
+                                    </div>
+                                    <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                                        <span data-bind="article.title">Conférence IA & Big Data 2024</span>
+                                    </h4>
+                                    <p class="text-slate-600 dark:text-slate-400" data-bind="article.excerpt">
+                                        Rencontre annuelle avec les experts du secteur, présentation des projets étudiants et tables rondes sur l'avenir de l'IA.
+                                    </p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- News Article 2 -->
+                        <article class="group">
+                            <div class="lg:grid lg:grid-cols-3 lg:gap-6">
+                                <!-- Young professional presenting their work to a group in modern office -->
+                                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250" alt="Professional presenting to colleagues" class="w-full lg:w-auto h-48 lg:h-32 object-cover rounded-xl group-hover:shadow-lg transition-shadow duration-300">
+                                <div class="lg:col-span-2 mt-4 lg:mt-0">
+                                    <div class="flex items-center text-sm text-slate-500 dark:text-slate-400 mb-2">
+                                        <span data-bind="article.category">Success Story</span>
+                                        <span class="mx-2">•</span>
+                                        <span data-bind="article.date">10 Mars 2024</span>
+                                    </div>
+                                    <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                                        <span data-bind="article.title">Alumni Spotlight: Startup IA</span>
+                                    </h4>
+                                    <p class="text-slate-600 dark:text-slate-400" data-bind="article.excerpt">
+                                        Découvrez le parcours de Khalid Bennani, diplômé 2023, qui a lancé sa startup spécialisée dans l'IA conversationnelle.
+                                    </p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- News Article 3 -->
+                        <article class="group">
+                            <div class="lg:grid lg:grid-cols-3 lg:gap-6">
+                                <!-- Research laboratory with advanced equipment and data visualization screens -->
+                                <img src="https://images.unsplash.com/photo-1582719471384-894fbb16e074?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250" alt="Research laboratory with data screens" class="w-full lg:w-auto h-48 lg:h-32 object-cover rounded-xl group-hover:shadow-lg transition-shadow duration-300">
+                                <div class="lg:col-span-2 mt-4 lg:mt-0">
+                                    <div class="flex items-center text-sm text-slate-500 dark:text-slate-400 mb-2">
+                                        <span data-bind="article.category">Recherche</span>
+                                        <span class="mx-2">•</span>
+                                        <span data-bind="article.date">5 Mars 2024</span>
+                                    </div>
+                                    <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                                        <span data-bind="article.title">Publication Internationale Acceptée</span>
+                                    </h4>
+                                    <p class="text-slate-600 dark:text-slate-400" data-bind="article.excerpt">
+                                        L'équipe de recherche publie ses travaux sur l'optimisation des réseaux de neurones dans IEEE Transactions on AI.
+                                    </p>
+                                </div>
+                            </div>
+                        </article>
+                        <!-- @END_MAP )) -->
+                    </div>
+                </div>
+
+                <!-- Events Sidebar -->
+                <div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-8 mt-16 lg:mt-0">Prochains Événements</h3>
+                    
+                    <div class="space-y-6">
+                        <!-- @MAP: upcomingEvents.map(event => ( -->
+                        <!-- Event 1 -->
+                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl p-6 hover:shadow-lg transition-shadow duration-300">
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-primary-100 dark:bg-primary-900 rounded-lg p-3 text-center min-w-[60px]">
+                                    <div class="text-sm font-medium text-primary-600 dark:text-primary-400" data-bind="event.month">MAR</div>
+                                    <div class="text-xl font-bold text-primary-700 dark:text-primary-300" data-bind="event.day">25</div>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-slate-900 dark:text-white mb-1" data-bind="event.title">Workshop Machine Learning</h4>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-2" data-bind="event.description">Formation pratique sur les algorithmes ML</p>
+                                    <div class="flex items-center text-xs text-slate-500 dark:text-slate-400">
+                                        <i class="fas fa-clock mr-1"></i>
+                                        <span data-bind="event.time">14h00 - 17h00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Event 2 -->
+                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl p-6 hover:shadow-lg transition-shadow duration-300">
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-accent-100 dark:bg-accent-900 rounded-lg p-3 text-center min-w-[60px]">
+                                    <div class="text-sm font-medium text-accent-600 dark:text-accent-400" data-bind="event.month">AVR</div>
+                                    <div class="text-xl font-bold text-accent-700 dark:text-accent-300" data-bind="event.day">08</div>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-slate-900 dark:text-white mb-1" data-bind="event.title">Soutenances PFE</h4>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-2" data-bind="event.description">Présentation des projets de fin d'études</p>
+                                    <div class="flex items-center text-xs text-slate-500 dark:text-slate-400">
+                                        <i class="fas fa-clock mr-1"></i>
+                                        <span data-bind="event.time">09h00 - 16h00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Event 3 -->
+                        <div class="bg-slate-50 dark:bg-slate-700 rounded-xl p-6 hover:shadow-lg transition-shadow duration-300">
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-emerald-100 dark:bg-emerald-900 rounded-lg p-3 text-center min-w-[60px]">
+                                    <div class="text-sm font-medium text-emerald-600 dark:text-emerald-400" data-bind="event.month">AVR</div>
+                                    <div class="text-xl font-bold text-emerald-700 dark:text-emerald-300" data-bind="event.day">15</div>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-slate-900 dark:text-white mb-1" data-bind="event.title">Forum Entreprises</h4>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-2" data-bind="event.description">Rencontres étudiants-employeurs</p>
+                                    <div class="flex items-center text-xs text-slate-500 dark:text-slate-400">
+                                        <i class="fas fa-clock mr-1"></i>
+                                        <span data-bind="event.time">10h00 - 15h00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- @END_MAP )) -->
+                    </div>
+
+                    <div class="mt-8">
+                        <a href="#" class="block w-full bg-primary-600 hover:bg-primary-700 text-white text-center py-3 px-4 rounded-xl font-semibold transition-colors duration-300">
+                            Voir le calendrier complet
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: News & Events -->
+
+    <!-- @COMPONENT: Faculty Section -->
+    <section class="py-20 bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-4 font-playfair">Équipe Pédagogique</h2>
+                <p class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                    Apprenez auprès d'experts reconnus dans leurs domaines
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- @MAP: faculty.map(member => ( -->
+                <!-- Faculty Member 1 -->
+                <div class="text-center group">
+                    <!-- Professional headshot of university professor in academic setting -->
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300" alt="Professeur universitaire" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover group-hover:scale-105 transition-transform duration-300 shadow-lg">
+                    <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-2" data-bind="member.name">Dr. Ahmed Benali</h4>
+                    <p class="text-primary-600 dark:text-primary-400 font-medium mb-2" data-bind="member.title">Directeur du Master</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mb-3" data-bind="member.specialization">Intelligence Artificielle, Apprentissage Automatique</p>
+                    <div class="flex justify-center space-x-3">
+                        <a href="#" class="text-slate-400 hover:text-primary-500 transition-colors">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-primary-500 transition-colors">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-primary-500 transition-colors">
+                            <i class="fas fa-globe"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Faculty Member 2 -->
+                <div class="text-center group">
+                    <!-- Professional female professor in modern office environment -->
+                    <img src="https://pixabay.com/get/g6fd3bf3ee1e477c94e9d1b94585fcad155cf8a7dd6cf99f9e094042a9f5428bb074514fd2bd7d6add392104622c1e45d4c3600e7a738cc07d5138b0eb080fe6f_1280.jpg" alt="Professeure universitaire" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover group-hover:scale-105 transition-transform duration-300 shadow-lg">
+                    <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-2" data-bind="member.name">Dr. Fatima El Alaoui</h4>
+                    <p class="text-primary-600 dark:text-primary-400 font-medium mb-2" data-bind="member.title">Professeure</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mb-3" data-bind="member.specialization">Big Data Analytics, Data Mining</p>
+                    <div class="flex justify-center space-x-3">
+                        <a href="#" class="text-slate-400 hover:text-primary-500 transition-colors">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-primary-500 transition-colors">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-primary-500 transition-colors">
+                            <i class="fas fa-globe"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Faculty Member 3 -->
+                <div class="text-center group">
+                    <!-- Male professor in technology lab with computer equipment -->
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300" alt="Professeur en laboratoire informatique" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover group-hover:scale-105 transition-transform duration-300 shadow-lg">
+                    <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-2" data-bind="member.name">Dr. Youssef Tazi</h4>
+                    <p class="text-primary-600 dark:text-primary-400 font-medium mb-2" data-bind="member.title">Professeur Associé</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mb-3" data-bind="member.specialization">Traitement du Langage Naturel</p>
+                    <div class="flex justify-center space-x-3">
+                        <a href="#" class="text-slate-400 hover:text-primary-500 transition-colors">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-primary-500 transition-colors">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-primary-500 transition-colors">
+                            <i class="fas fa-globe"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Faculty Member 4 -->
+                <div class="text-center group">
+                    <!-- Female researcher working with data visualization and computer screens -->
+                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300" alt="Chercheuse en informatique" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover group-hover:scale-105 transition-transform duration-300 shadow-lg">
+                    <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-2" data-bind="member.name">Dr. Sara Khaldi</h4>
+                    <p class="text-primary-600 dark:text-primary-400 font-medium mb-2" data-bind="member.title">Maître de Conférences</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mb-3" data-bind="member.specialization">Systèmes Intelligents, IoT</p>
+                    <div class="flex justify-center space-x-3">
+                        <a href="#" class="text-slate-400 hover:text-primary-500 transition-colors">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-primary-500 transition-colors">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-primary-500 transition-colors">
+                            <i class="fas fa-globe"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="#" class="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium text-lg">
+                    Découvrir toute l'équipe <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Faculty Section -->
+
+    <!-- @COMPONENT: CTA Section -->
+    <section class="py-20 bg-gradient-to-r from-primary-600 to-primary-800 dark:from-slate-800 dark:to-slate-900 text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <!-- Abstract technology pattern with circuits and data flow -->
+            <div style="background-image: url('https://pixabay.com/get/gfa9d0756265d995bf167ffd35888e6099112d2883613c27bdf3123182ce97ff82e1c0397b264881f3aca51a86e2d389d530f08683b209237a02a709f2413bfc9_1280.jpg'); background-size: cover; background-position: center;" class="w-full h-full"></div>
+        </div>
+        
+        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl lg:text-5xl font-bold mb-6 font-playfair">
+                Prêt à Façonner l'Avenir ?
+            </h2>
+            <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto leading-relaxed">
+                Rejoignez notre communauté d'étudiants passionnés et devenez les leaders de demain en Big Data et systèmes intelligents.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                <a href="#" class="bg-accent-500 hover:bg-accent-600 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:shadow-2xl hover:scale-105 flex items-center justify-center">
+                    <i class="fas fa-file-alt mr-3"></i>
+                    Postuler Maintenant
+                </a>
+                <a href="#" class="border-2 border-white text-white hover:bg-white hover:text-primary-900 px-8 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center">
+                    <i class="fas fa-calendar-alt mr-3"></i>
+                    Prendre Rendez-vous
+                </a>
+            </div>
+
+            <div class="mt-12 pt-8 border-t border-white/20">
+                <p class="text-blue-100 mb-4">Prochaine rentrée: Septembre 2024</p>
+                <div class="flex flex-wrap justify-center gap-8 text-sm">
+                    <div class="flex items-center">
+                        <i class="fas fa-calendar-check mr-2 text-accent-400"></i>
+                        <span>Date limite candidatures: 30 Juin</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-users mr-2 text-accent-400"></i>
+                        <span>Places limitées: 30 étudiants</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-graduation-cap mr-2 text-accent-400"></i>
+                        <span>Niveau requis: Licence ou équivalent</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: CTA Section -->
+
+    <!-- @COMPONENT: Footer -->
+    <footer class="bg-slate-900 dark:bg-slate-950 text-slate-300 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="py-16 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Brand Column -->
+                <div class="lg:col-span-1">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-graduation-cap text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white font-bold">Master BDSI</h3>
+                            <p class="text-sm text-slate-400">FS Dhar El Mehraz</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-400 mb-6">
+                        Formation d'excellence en Big Data et Systèmes Intelligents pour les futurs leaders technologiques.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-primary-600 rounded-full flex items-center justify-center transition-colors">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-primary-600 rounded-full flex items-center justify-center transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-primary-600 rounded-full flex items-center justify-center transition-colors">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-white font-semibold mb-6">Formation</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="hover:text-white transition-colors">Programme</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Matières</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Équipe pédagogique</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Admissions</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Resources -->
+                <div>
+                    <h4 class="text-white font-semibold mb-6">Ressources</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="hover:text-white transition-colors">Projets étudiants</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Publications</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Événements</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Alumni</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Partenariats</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="text-white font-semibold mb-6">Contact</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <i class="fas fa-map-marker-alt text-primary-400 mt-1"></i>
+                            <div>
+                                <p>Faculté des Sciences</p>
+                                <p>Dhar El Mehraz, Fès</p>
+                                <p>Maroc</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-phone text-primary-400"></i>
+                            <span>+212 5 35 60 XX XX</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-envelope text-primary-400"></i>
+                            <span>master.bdsi@usmba.ac.ma</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-800 py-8 flex flex-col md:flex-row justify-between items-center">
+                <div class="text-slate-400 text-sm">
+                    <p>&copy; 2024 Master BDSI - FS Dhar El Mehraz. Tous droits réservés.</p>
+                </div>
+                <div class="flex items-center space-x-6 mt-4 md:mt-0 text-sm">
+                    <a href="#" class="hover:text-white transition-colors">Mentions légales</a>
+                    <a href="#" class="hover:text-white transition-colors">Politique de confidentialité</a>
+                    <a href="#" class="hover:text-white transition-colors">Plan du site</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- @END_COMPONENT: Footer -->
+
+    <!-- @COMPONENT: Back to Top Button -->
+    <button id="backToTop" class="fixed bottom-8 right-8 bg-primary-600 hover:bg-primary-700 text-white w-12 h-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 invisible z-40">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    <!-- @END_COMPONENT: Back to Top Button -->
+
+    <script>
+        (function() {
+            // Dark mode functionality
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const html = document.documentElement;
+
+            // Check for saved theme preference or default to light mode
+            const currentTheme = localStorage.getItem('theme') || 
+                                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+            if (currentTheme === 'dark') {
+                html.classList.add('dark');
+            }
+
+            darkModeToggle.addEventListener('click', function() {
+                html.classList.toggle('dark');
+                const theme = html.classList.contains('dark') ? 'dark' : 'light';
+                localStorage.setItem('theme', theme);
+            });
+
+            // Back to top functionality
+            const backToTopButton = document.getElementById('backToTop');
+            
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    backToTopButton.classList.remove('opacity-0', 'invisible');
+                } else {
+                    backToTopButton.classList.add('opacity-0', 'invisible');
+                }
+            });
+
+            backToTopButton.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Intersection Observer for animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fade-in');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all sections for animation
+            document.querySelectorAll('section').forEach(section => {
+                observer.observe(section);
+            });
+        })();
+    </script>
+
+    <!-- @STATE: isDarkMode:boolean = false -->
+    <!-- @STATE: currentLanguage:string = 'fr' -->
+    <!-- @STATE: isMenuOpen:boolean = false -->
+    
+    <!-- @FUNCTIONALITY: This page should implement a content management system for all sections -->
+    <!-- @FUNCTIONALITY: Multi-language content switching functionality needed -->
+    <!-- @FUNCTIONALITY: Project filtering and search functionality required -->
+    <!-- @FUNCTIONALITY: Event calendar integration with registration system -->
+    <!-- @FUNCTIONALITY: Contact form with validation and email sending -->
+
+</body>
+</html>
