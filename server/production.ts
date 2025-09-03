@@ -123,6 +123,8 @@ async function startServer() {
       log(`   - DATABASE_URL: ${process.env.DATABASE_URL ? 'configured' : 'not set'}`);
       log(`   - SUPABASE_URL: ${process.env.SUPABASE_URL ? 'configured' : 'not set'}`);
       log(`   - SUPABASE_ANON_KEY: ${process.env.SUPABASE_ANON_KEY ? 'configured' : 'not set'}`);
+      log(`   - RAILWAY_ENVIRONMENT: ${process.env.RAILWAY_ENVIRONMENT || 'not set'}`);
+      log(`   - SESSION_SECRET: ${process.env.SESSION_SECRET ? 'configured' : 'not set'}`);
     });
     
     server.on('error', (err: any) => {

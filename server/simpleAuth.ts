@@ -8,9 +8,17 @@ import MemoryStore from "memorystore";
 const MemoryStoreSession = MemoryStore(session);
 
 export function getSession() {
-  // Use secure cookies only when FORCE_SECURE_COOKIES is set or when deployed on Railway/similar
-  const useSecureCookies = process.env.FORCE_SECURE_COOKIES === 'true' || 
-                          Boolean(process.env.NODE_ENV === 'production' && process.env.RAILWAY_ENVIRONMENT);
+  // Detect if we're on Railway or other HTTPS platform
+  const isHttpsPlatform = 
+    process.env.RAILWAY_ENVIRONMENT || 
+    process.env.VERCEL || 
+    process.env.HEROKU_APP_NAME || 
+    process.env.NODE_ENV === 'production' && (process.env.HTTPS === 'true' || process.env.FORCE_HTTPS === 'true');
+  
+  // Use secure cookies only on HTTPS platforms, not for local production testing
+  const useSecureCookies = Boolean(isHttpsPlatform);
+  
+  console.log(`Session configuration: secure=${useSecureCookies}, env=${process.env.NODE_ENV}, railway=${process.env.RAILWAY_ENVIRONMENT || 'false'}`);
   
   return session({
     secret: process.env.SESSION_SECRET || 'your-secret-key-change-this',
@@ -19,6 +27,7 @@ export function getSession() {
     cookie: {
       httpOnly: true,
       secure: useSecureCookies,
+      sameSite: useSecureCookies ? 'lax' : 'lax', // Help with cross-origin issues
       maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
     },
     store: new MemoryStoreSession({
