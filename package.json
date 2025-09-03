@@ -13,7 +13,8 @@
     "check": "tsc",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx server/seed-feature-flags.ts",
-    "db:seed-settings": "tsx server/seed-settings.ts"
+    "db:seed-settings": "tsx server/seed-settings.ts",
+    "db:create-admin": "tsx server/create-admin.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

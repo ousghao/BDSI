@@ -42,9 +42,10 @@ export default defineConfig(async ({ command, mode }) => {
       emptyOutDir: true,
     },
     server: {
+      middlewareMode: process.env.NODE_ENV === 'development',
       fs: {
-        strict: true,
-        deny: ["**/.*"],
+        strict: false,
+        allow: ['..'],
       },
     },
   };

@@ -26,15 +26,9 @@ export function log(message: string, source = "express") {
 }
 
 export async function setupVite(app: Express, server: Server) {
-  const serverOptions = {
-    middlewareMode: true as const,                  // ✅ garde le type exact pour Vite
-    hmr: { server },
-    allowedHosts: true as const,
-  };
-
   const vite = await createViteServer({
-    ...viteConfig,
-    configFile: false,
+    configFile: path.resolve(__dirname, "..", "vite.config.ts"),
+    root: path.resolve(__dirname, "..", "client"),
     customLogger: {
       ...viteLogger,
       error: (msg, options) => {
@@ -42,7 +36,14 @@ export async function setupVite(app: Express, server: Server) {
         process.exit(1);
       },
     },
-    server: serverOptions,
+    server: {
+      middlewareMode: true,
+      hmr: { server },
+      fs: {
+        strict: false,
+        allow: ['..'],
+      },
+    },
     appType: "custom",
   });
 
@@ -52,13 +53,13 @@ export async function setupVite(app: Express, server: Server) {
 
     try {
       const clientTemplate = path.resolve(
-        __dirname,          // ✅ remplacé
+        __dirname,          
         "..",
         "client",
         "index.html",
       );
 
-      // always reload the index.html file from disk incase it changes
+      // always reload the index.html file from disk in case it changes
       let template = await fs.promises.readFile(clientTemplate, "utf-8");
       template = template.replace(
         `src="/src/main.tsx"`,
