@@ -148,9 +148,9 @@ const translations: Translations = {
     ar: 'اتصال'
   },
   'footer.copyright': {
-    fr: '© 2024 Master BDSI - FS Dhar El Mehraz. Tous droits réservés.',
-    en: '© 2024 Master BDSI - FS Dhar El Mehraz. All rights reserved.',
-    ar: '© 2024 ماجستير BDSI - كلية العلوم ظهر المهراز. جميع الحقوق محفوظة.'
+    fr: '© 2025 Master BDSI - FS Dhar El Mehraz. Tous droits réservés.',
+    en: '© 2025 Master BDSI - FS Dhar El Mehraz. All rights reserved.',
+    ar: '© 2025 ماجستير BDSI - كلية العلوم ظهر المهراز. جميع الحقوق محفوظة.'
   },
 
   // Admissions
@@ -813,26 +813,6 @@ const translations: Translations = {
     en: 'Copy URL',
     ar: 'نسخ الرابط'
   },
-  'media.copied': {
-    fr: 'URL copiée',
-    en: 'URL copied',
-    ar: 'تم نسخ الرابط'
-  },
-  'media.copiedDescription': {
-    fr: 'L\'URL du fichier a été copiée dans le presse-papiers.',
-    en: 'The file URL has been copied to clipboard.',
-    ar: 'تم نسخ رابط الملف إلى الحافظة.'
-  },
-  'media.deleted': {
-    fr: 'Fichier supprimé',
-    en: 'File deleted',
-    ar: 'تم حذف الملف'
-  },
-  'media.deletedDescription': {
-    fr: 'Le fichier a été supprimé avec succès.',
-    en: 'The file has been deleted successfully.',
-    ar: 'تم حذف الملف بنجاح.'
-  },
   'landing.hero.title': {
     fr: 'Master Big Data & Systèmes Intelligents',
     en: 'Master Big Data & Intelligent Systems',
@@ -1237,6 +1217,48 @@ const translations: Translations = {
     ar: 'مكتبة الوسائط'
   },
 
+  // Admin Dashboard Actions
+  'admin.newProject': {
+    fr: 'Nouveau Projet',
+    en: 'New Project',
+    ar: 'مشروع جديد'
+  },
+  'admin.newNews': {
+    fr: 'Nouvelle Actualité',
+    en: 'New News',
+    ar: 'خبر جديد'
+  },
+  'admin.newEvent': {
+    fr: 'Nouvel Événement',
+    en: 'New Event',
+    ar: 'حدث جديد'
+  },
+  'admin.mediaLibrary': {
+    fr: 'Médiathèque',
+    en: 'Media Library',
+    ar: 'مكتبة الوسائط'
+  },
+  'admin.projects': {
+    fr: 'Projets',
+    en: 'Projects',
+    ar: 'المشاريع'
+  },
+  'admin.news': {
+    fr: 'Actualités',
+    en: 'News',
+    ar: 'الأخبار'
+  },
+  'admin.events': {
+    fr: 'Événements',
+    en: 'Events',
+    ar: 'الأحداث'
+  },
+  'admin.courses': {
+    fr: 'Matières',
+    en: 'Courses',
+    ar: 'المواد'
+  },
+
   // Admin Settings
   'admin.settings.title': {
     fr: 'Paramètres du site',
@@ -1289,11 +1311,6 @@ const translations: Translations = {
     fr: 'Messages de contact',
     en: 'Contact Messages',
     ar: 'رسائل الاتصال'
-  },
-  'admin.admissions.title': {
-    fr: 'Candidatures',
-    en: 'Applications',
-    ar: 'الطلبات'
   },
   'admin.admissions.manage': {
     fr: 'Gérer les candidatures',
@@ -1652,11 +1669,6 @@ const translations: Translations = {
     fr: 'Meetups',
     en: 'Meetups',
     ar: 'اللقاءات'
-  },
-  'events.subtitle': {
-    fr: 'Découvrez les événements à venir et les activités du Master BDSI',
-    en: 'Discover upcoming events and activities of the BDSI Master\'s program',
-    ar: 'اكتشف الأحداث القادمة وأنشطة برنامج الماجستير BDSI'
   },
   'events.upcoming': {
     fr: 'Événements à venir',

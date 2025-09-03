@@ -119,10 +119,10 @@ export default function Dashboard() {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2" data-testid="dashboard-title">
-              {t('admin.dashboard')}
+              {t('admin.dashboard.title')}
             </h1>
             <p className="text-slate-600 dark:text-slate-400">
-              {t('admin.welcomeMessage').replace('{name}', user?.name || t('admin.administrator'))}
+              {t('admin.dashboard.welcome').replace('{{name}}', user?.firstName || t('admin.dashboard.defaultWelcome'))}
             </p>
           </div>
 

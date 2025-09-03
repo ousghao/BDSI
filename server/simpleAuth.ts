@@ -8,13 +8,17 @@ import MemoryStore from "memorystore";
 const MemoryStoreSession = MemoryStore(session);
 
 export function getSession() {
+  // Use secure cookies only when FORCE_SECURE_COOKIES is set or when deployed on Railway/similar
+  const useSecureCookies = process.env.FORCE_SECURE_COOKIES === 'true' || 
+                          Boolean(process.env.NODE_ENV === 'production' && process.env.RAILWAY_ENVIRONMENT);
+  
   return session({
     secret: process.env.SESSION_SECRET || 'your-secret-key-change-this',
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: useSecureCookies,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
     },
     store: new MemoryStoreSession({
