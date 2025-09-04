@@ -3,13 +3,82 @@ import type { Express, RequestHandler } from "express";
 import { storage } from "./storage";
 import { nanoid } from "nanoid";
 import MemoryStore from "memorystore";
+import { db } from "./db";
+import { sessions } from "@shared/schema";
+import { eq, lt } from "drizzle-orm";
 
 // Create a memory store for sessions
 const MemoryStoreSession = MemoryStore(session);
 
+// Simple database session store for Railway (using existing sessions table)
+class DatabaseSessionStore extends session.Store {
+  async get(sid: string, callback: (err?: any, session?: any) => void) {
+    try {
+      const result = await db.select().from(sessions).where(eq(sessions.sid, sid));
+      const sessionData = result[0];
+      if (sessionData && sessionData.expire > new Date()) {
+        callback(null, sessionData.sess);
+      } else {
+        // Clean up expired session
+        if (sessionData) {
+          await db.delete(sessions).where(eq(sessions.sid, sid));
+        }
+        callback(null, null);
+      }
+    } catch (error) {
+      console.error('Session get error:', error);
+      callback(error);
+    }
+  }
+
+  async set(sid: string, session: any, callback?: (err?: any) => void) {
+    try {
+      const expire = new Date(Date.now() + (session.cookie.maxAge || 7 * 24 * 60 * 60 * 1000));
+      
+      // Try to insert, if conflict then update
+      await db.insert(sessions)
+        .values({
+          sid,
+          sess: session,
+          expire
+        })
+        .onConflictDoUpdate({
+          target: sessions.sid,
+          set: {
+            sess: session,
+            expire
+          }
+        });
+        
+      callback?.();
+    } catch (error) {
+      console.error('Session set error:', error);
+      callback?.(error);
+    }
+  }
+
+  async destroy(sid: string, callback?: (err?: any) => void) {
+    try {
+      await db.delete(sessions).where(eq(sessions.sid, sid));
+      callback?.();
+    } catch (error) {
+      console.error('Session destroy error:', error);
+      callback?.(error);
+    }
+  }
+
+  // Clean up expired sessions periodically
+  async cleanup() {
+    try {
+      await db.delete(sessions).where(lt(sessions.expire, new Date()));
+    } catch (error) {
+      console.error('Session cleanup error:', error);
+    }
+  }
+}
+
 export function getSession() {
   // Detect if we're on Railway or other HTTPS platform
-  // Railway sets RAILWAY_STATIC_URL, RAILWAY_GIT_COMMIT_SHA, etc.
   const isRailway = Boolean(
     process.env.RAILWAY_ENVIRONMENT || 
     process.env.RAILWAY_STATIC_URL || 
@@ -26,7 +95,12 @@ export function getSession() {
   // Use secure cookies only on HTTPS platforms, not for local production testing
   const useSecureCookies = Boolean(isHttpsPlatform);
   
-  console.log(`🍪 Session configuration: secure=${useSecureCookies}, env=${process.env.NODE_ENV}, railway=${isRailway ? 'detected' : 'false'}`);
+  // Use database store for Railway, memory store for local development
+  const sessionStore = isRailway ? new DatabaseSessionStore() : new MemoryStoreSession({
+    checkPeriod: 86400000, // prune expired entries every 24h
+  });
+  
+  console.log(`🍪 Session configuration: secure=${useSecureCookies}, env=${process.env.NODE_ENV}, railway=${isRailway ? 'detected' : 'false'}, store=${isRailway ? 'database' : 'memory'}`);
   console.log(`🔍 Railway env vars: RAILWAY_ENVIRONMENT=${process.env.RAILWAY_ENVIRONMENT || 'undefined'}, RAILWAY_STATIC_URL=${process.env.RAILWAY_STATIC_URL || 'undefined'}`);
   
   return session({
@@ -39,9 +113,7 @@ export function getSession() {
       sameSite: 'lax', // Important for Railway
       maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
     },
-    store: new MemoryStoreSession({
-      checkPeriod: 86400000, // prune expired entries every 24h
-    }),
+    store: sessionStore,
   });
 }
 

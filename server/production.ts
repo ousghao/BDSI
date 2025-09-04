@@ -108,6 +108,19 @@ async function startServer() {
       setupDebugRoutes(app);
     }
     
+    // Clean up expired sessions on Railway
+    if (process.env.RAILWAY_ENVIRONMENT || process.env.RAILWAY_STATIC_URL) {
+      try {
+        const { sessions } = await import("@shared/schema");
+        const { lt } = await import("drizzle-orm");
+        const { db } = await import("./db");
+        await db.delete(sessions).where(lt(sessions.expire, new Date()));
+        log("🧹 Cleaned up expired sessions");
+      } catch (error) {
+        log("⚠️  Session cleanup failed: " + String(error));
+      }
+    }
+    
     // Serve static files (built React app)
     serveStaticFiles(app);
     
