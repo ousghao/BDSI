@@ -102,6 +102,12 @@ async function startServer() {
     // Register API routes
     const server = await registerRoutes(app);
     
+    // Add debug routes (remove in final production)
+    if (process.env.NODE_ENV === 'production') {
+      const { setupDebugRoutes } = await import("./debug");
+      setupDebugRoutes(app);
+    }
+    
     // Serve static files (built React app)
     serveStaticFiles(app);
     

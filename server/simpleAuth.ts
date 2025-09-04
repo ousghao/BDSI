@@ -9,8 +9,16 @@ const MemoryStoreSession = MemoryStore(session);
 
 export function getSession() {
   // Detect if we're on Railway or other HTTPS platform
-  const isHttpsPlatform = 
+  // Railway sets RAILWAY_STATIC_URL, RAILWAY_GIT_COMMIT_SHA, etc.
+  const isRailway = Boolean(
     process.env.RAILWAY_ENVIRONMENT || 
+    process.env.RAILWAY_STATIC_URL || 
+    process.env.RAILWAY_GIT_COMMIT_SHA ||
+    process.env.RAILWAY_SERVICE_NAME
+  );
+  
+  const isHttpsPlatform = 
+    isRailway ||
     process.env.VERCEL || 
     process.env.HEROKU_APP_NAME || 
     process.env.NODE_ENV === 'production' && (process.env.HTTPS === 'true' || process.env.FORCE_HTTPS === 'true');
@@ -18,7 +26,8 @@ export function getSession() {
   // Use secure cookies only on HTTPS platforms, not for local production testing
   const useSecureCookies = Boolean(isHttpsPlatform);
   
-  console.log(`Session configuration: secure=${useSecureCookies}, env=${process.env.NODE_ENV}, railway=${process.env.RAILWAY_ENVIRONMENT || 'false'}`);
+  console.log(`🍪 Session configuration: secure=${useSecureCookies}, env=${process.env.NODE_ENV}, railway=${isRailway ? 'detected' : 'false'}`);
+  console.log(`🔍 Railway env vars: RAILWAY_ENVIRONMENT=${process.env.RAILWAY_ENVIRONMENT || 'undefined'}, RAILWAY_STATIC_URL=${process.env.RAILWAY_STATIC_URL || 'undefined'}`);
   
   return session({
     secret: process.env.SESSION_SECRET || 'your-secret-key-change-this',
@@ -27,7 +36,7 @@ export function getSession() {
     cookie: {
       httpOnly: true,
       secure: useSecureCookies,
-      sameSite: useSecureCookies ? 'lax' : 'lax', // Help with cross-origin issues
+      sameSite: 'lax', // Important for Railway
       maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
     },
     store: new MemoryStoreSession({
