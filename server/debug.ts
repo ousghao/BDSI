@@ -27,20 +27,51 @@ export function setupDebugRoutes(app: Express) {
   app.post('/api/debug/test-session', (req, res) => {
     const session = req.session as any;
     session.testValue = 'railway-test-' + Date.now();
+    console.log(`🧪 Debug session SET - ID: ${req.sessionID}, value: ${session.testValue}`);
     res.json({ 
       message: 'Test session créée', 
       testValue: session.testValue,
-      sessionId: session.id 
+      sessionId: req.sessionID,
+      cookies: req.headers.cookie
     });
   });
 
   app.get('/api/debug/test-session', (req, res) => {
     const session = req.session as any;
+    console.log(`🧪 Debug session GET - ID: ${req.sessionID}, data:`, JSON.stringify(session || {}));
     res.json({ 
       message: 'Session récupérée',
       testValue: session.testValue || 'non trouvée',
-      sessionId: session.id,
-      hasSession: Boolean(session.testValue)
+      sessionId: req.sessionID,
+      hasSession: Boolean(session.testValue),
+      fullSession: session,
+      cookies: req.headers.cookie
     });
+  });
+
+  // Nouveau endpoint pour voir le contenu de la table sessions
+  app.get('/api/debug/sessions-db', async (req, res) => {
+    try {
+      const { db } = await import("./db");
+      const { sessions } = await import("@shared/schema");
+      
+      const allSessions = await db.select().from(sessions).limit(10);
+      const now = new Date();
+      
+      const sessionInfo = allSessions.map(s => ({
+        sid: s.sid.substring(0, 10) + '...',
+        hasData: Boolean(s.sess),
+        expired: s.expire < now,
+        expires: s.expire.toISOString()
+      }));
+      
+      res.json({
+        totalSessions: allSessions.length,
+        sessions: sessionInfo,
+        currentTime: now.toISOString()
+      });
+    } catch (error) {
+      res.status(500).json({ error: String(error) });
+    }
   });
 }
