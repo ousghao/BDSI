@@ -24,6 +24,7 @@ export function LoginForm() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
+        credentials: 'include' // Critical: send cookies with request
       });
 
       const data = await response.json();
@@ -64,6 +65,7 @@ export function LoginForm() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
+        credentials: 'include' // Critical: send cookies with request
       });
 
       const data = await response.json();

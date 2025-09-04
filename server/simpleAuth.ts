@@ -114,16 +114,16 @@ export function getSession() {
   console.log(`🔍 Railway env vars: RAILWAY_ENVIRONMENT=${process.env.RAILWAY_ENVIRONMENT || 'undefined'}, RAILWAY_STATIC_URL=${process.env.RAILWAY_STATIC_URL || 'undefined'}`);
   
   return session({
+    name: 'connect.sid', // Standard session name
     secret: process.env.SESSION_SECRET || 'your-secret-key-change-this',
     resave: false,
     saveUninitialized: false,
-    name: 'sessionId', // Custom name to avoid conflicts
+    proxy: true, // Critical: helps express-session honor trust proxy for secure cookies
     cookie: {
       httpOnly: true,
-      secure: useSecureCookies,
-      sameSite: isRailway ? 'none' : 'lax', // 'none' required for Railway HTTPS cross-origin
+      secure: true, // Always true for Railway HTTPS
+      sameSite: 'none', // Required for cross-origin on HTTPS
       maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
-      domain: isRailway ? undefined : undefined, // Let Railway handle domain automatically
     },
     store: sessionStore,
   });

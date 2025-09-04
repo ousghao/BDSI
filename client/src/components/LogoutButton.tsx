@@ -14,6 +14,7 @@ export function LogoutButton() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: 'include' // Critical: send cookies with request
       });
 
       if (response.ok) {

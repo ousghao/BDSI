@@ -16,6 +16,10 @@ function log(message: string) {
 
 const app = express();
 
+// CRITICAL: Trust proxy for Railway/HTTPS platforms - MUST be before session config
+app.set('trust proxy', 1);
+console.log('🛡️ Trust proxy enabled for Railway/HTTPS');
+
 // Basic middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
