@@ -26,6 +26,11 @@ app.use((req, res, next) => {
   const path = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
 
+  // Log cookie headers for debugging
+  if (path.startsWith("/api/auth")) {
+    console.log(`🍪 Cookie Debug - Path: ${path}, Headers: ${JSON.stringify(req.headers.cookie || 'no-cookie')}`);
+  }
+
   const originalResJson = res.json;
   res.json = function (bodyJson, ...args) {
     capturedJsonResponse = bodyJson;
@@ -143,6 +148,8 @@ async function startServer() {
       log(`   - SUPABASE_URL: ${process.env.SUPABASE_URL ? 'configured' : 'not set'}`);
       log(`   - SUPABASE_ANON_KEY: ${process.env.SUPABASE_ANON_KEY ? 'configured' : 'not set'}`);
       log(`   - RAILWAY_ENVIRONMENT: ${process.env.RAILWAY_ENVIRONMENT || 'not set'}`);
+      log(`   - RAILWAY_STATIC_URL: ${process.env.RAILWAY_STATIC_URL || 'not set'}`);
+      log(`   - RAILWAY_GIT_COMMIT_SHA: ${process.env.RAILWAY_GIT_COMMIT_SHA || 'not set'}`);
       log(`   - SESSION_SECRET: ${process.env.SESSION_SECRET ? 'configured' : 'not set'}`);
     });
     

@@ -107,23 +107,23 @@ export function getSession() {
   // Use secure cookies only on HTTPS platforms, not for local production testing
   const useSecureCookies = Boolean(isHttpsPlatform);
   
-  // Use database store for Railway, memory store for local development
-  const sessionStore = isRailway ? new DatabaseSessionStore() : new MemoryStoreSession({
-    checkPeriod: 86400000, // prune expired entries every 24h
-  });
+  // Always use database store for better persistence
+  const sessionStore = new DatabaseSessionStore();
   
-  console.log(`🍪 Session configuration: secure=${useSecureCookies}, env=${process.env.NODE_ENV}, railway=${isRailway ? 'detected' : 'false'}, store=${isRailway ? 'database' : 'memory'}`);
+  console.log(`🍪 Session configuration: secure=${useSecureCookies}, env=${process.env.NODE_ENV}, railway=${isRailway ? 'detected' : 'false'}, store=database`);
   console.log(`🔍 Railway env vars: RAILWAY_ENVIRONMENT=${process.env.RAILWAY_ENVIRONMENT || 'undefined'}, RAILWAY_STATIC_URL=${process.env.RAILWAY_STATIC_URL || 'undefined'}`);
   
   return session({
     secret: process.env.SESSION_SECRET || 'your-secret-key-change-this',
     resave: false,
     saveUninitialized: false,
+    name: 'sessionId', // Custom name to avoid conflicts
     cookie: {
       httpOnly: true,
       secure: useSecureCookies,
-      sameSite: 'lax', // Important for Railway
+      sameSite: isRailway ? 'none' : 'lax', // 'none' required for Railway HTTPS cross-origin
       maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
+      domain: isRailway ? undefined : undefined, // Let Railway handle domain automatically
     },
     store: sessionStore,
   });
